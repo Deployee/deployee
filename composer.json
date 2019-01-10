@@ -11,7 +11,7 @@
   ],
   "bin": ["bin/deployee"],
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=7.0",
     "symfony/event-dispatcher": "^3.3",
     "symfony/yaml": "^3.3",
     "symfony/finder": "^3.3",
