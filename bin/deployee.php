@@ -1,23 +1,20 @@
 <?php
-/**
- * Bootstrap file for Deployee task runner
- */
 
+use Deployee\Kernel\Locator;
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
 use Deployee\Kernel\DependencyProviderContainer;
 use Deployee\Kernel\KernelConstants;
-use Deployee\Kernel\Locator;
 
 $findLoader = [
-    __DIR__ . '/vendor',
-    __DIR__ . '/../../'
+    dirname(__DIR__) . '/vendor/autoload.php',
+    dirname(__DIR__) . '/../../autoload.php',
 ];
 
 $loaderFile = '';
-foreach($findLoader as $find){
-    if(is_file($find . '/autoload.php')){
-        $loaderFile = $find . '/autoload.php';
+foreach($findLoader as $expectedFilepath){
+    if(is_file($expectedFilepath)){
+        $loaderFile = $expectedFilepath;
         break;
     }
 }
@@ -36,4 +33,4 @@ $locator = new Locator($dependencyProviderContainer, $namespaces);
 $dependencyProviderContainer[Module::CLASS_LOADER_CONTAINER_ID] = $loader;
 $dependencyProviderContainer[KernelConstants::LOCATOR] = $locator;
 
-return $locator;
+$locator->Application()->getFacade()->runApplication();

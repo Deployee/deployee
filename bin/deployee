@@ -1,9 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-use Deployee\Kernel\Locator;
-
-/* @var Locator $locator */
-$locator = require __DIR__ . '/../bootstrap.php';
-
-$locator->Application()->getFacade()->runApplication();
+require('deployee.php');
