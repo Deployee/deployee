@@ -4,7 +4,7 @@ use Deployee\Kernel\Locator;
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
 use Deployee\Kernel\DependencyProviderContainer;
-use Deployee\Kernel\KernelConstants;
+use Deployee\Kernel\KernelConstraints;
 
 $findLoader = [
     dirname(__DIR__) . '/vendor/autoload.php',
@@ -31,6 +31,6 @@ $dependencyProviderContainer = new DependencyProviderContainer();
 $locator = new Locator($dependencyProviderContainer, $namespaces);
 
 $dependencyProviderContainer[Module::CLASS_LOADER_CONTAINER_ID] = $loader;
-$dependencyProviderContainer[KernelConstants::LOCATOR] = $locator;
+$dependencyProviderContainer[KernelConstraints::LOCATOR] = $locator;
 
 $locator->Application()->getFacade()->runApplication();
