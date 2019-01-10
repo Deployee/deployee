@@ -10,9 +10,7 @@ use Deployee\Kernel\Modules\Module;
 use Deployee\Kernel\Modules\ModuleCollection;
 use Deployee\Kernel\Modules\ModuleInterface;
 
-/**
- * @mixin \GeneratedDeployeeIdeSupportLocator
- */
+
 class Locator
 {
     /**
@@ -85,8 +83,9 @@ class Locator
     /**
      * @param string $name
      * @return ModuleInterface
+     * @throws ModuleNotFoundException
      */
-    private function createModule($name)
+    private function createModule(string $name)
     {
         try {
             $moduleClasses = ["{$name}\\{$name}Module", "{$name}\\Module"];
