@@ -2,32 +2,45 @@
 
 namespace Deployee\Kernel;
 
-class Container extends \Pimple\Container implements ContainerInterface
+class Container implements ContainerInterface
 {
+    /**
+     * @var \Pimple\Container
+     */
+    private $container;
+
+    public function __construct(array $values = array())
+    {
+        $this->container = new \Pimple\Container($values);
+    }
+
     /**
      * @param string $id
      * @return mixed
      */
-    public function getDependency($id)
+    public function get($id)
     {
-        return $this[$id];
+        return $this->container[$id];
     }
 
     /**
      * @param string $id
      * @param mixed $value
      */
-    public function setDependency($id, $value)
+    public function set($id, $value)
     {
-        $this[$id] = $value;
+        $this->container[$id] = $value;
     }
 
     /**
      * @param string $id
      * @param callable $callable
      */
-    public function extendDependency($id, callable $callable)
+    public function extend($id, callable $callable)
     {
-        $this->extend($id, $callable);
+        $me = $this;
+        $this->container->extend($id, function($value) use($callable, $me){
+            return call_user_func_array($callable, [$value, $me]);
+        });
     }
 }
