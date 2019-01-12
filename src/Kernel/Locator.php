@@ -29,6 +29,11 @@ class Locator
     private $namespaces;
 
     /**
+     * @var ModuleClassFinder
+     */
+    private $moduleClassFinder;
+
+    /**
      * @param DependencyProviderContainerInterface $dependencyProviderContainer
      * @param array $namespaces
      */
@@ -37,6 +42,7 @@ class Locator
         $this->dependencyProviderContainer = $dependencyProviderContainer;
         $this->modules = new ModuleCollection();
         $this->namespaces = $namespaces;
+        $this->moduleClassFinder = new ModuleClassFinder($namespaces);
     }
 
     /**
@@ -137,15 +143,17 @@ class Locator
      */
     private function locateClassName(array $classNames, $mustBeSubClassOf = '')
     {
-        foreach($this->namespaces as $namespace){
-            foreach($classNames as $className) {
-                if (class_exists($namespace . $className)
-                    && ($mustBeSubClassOf === '' || is_subclass_of($namespace . $className, $mustBeSubClassOf))) {
-                    return $namespace . $className;
-                }
-            }
+        $results = [];
+        foreach($classNames as $className) {
+            $results = array_merge(
+                $this->moduleClassFinder->findClassImplementingInterface($className, $mustBeSubClassOf),
+                $results
+            );
+        }
+        if(count($results) === 0) {
+            throw new ClassNotFoundException("Could not locate \"" . implode(', ', $classNames) . "\"");
         }
 
-        throw new ClassNotFoundException("Could not locate \"".implode(', ', $classNames)."\"");
+        return current($results);
     }
 }
