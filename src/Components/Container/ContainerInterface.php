@@ -9,18 +9,18 @@ interface ContainerInterface
      * @param string $id
      * @return mixed
      */
-    public function get($id);
+    public function get(string $id);
 
     /**
      * @param string $id
      * @param mixed $value
      * @return mixed
      */
-    public function set($id, $value);
+    public function set(string $id, $value);
 
     /**
      * @param string $id
      * @param callable $callable
      */
-    public function extend($id, callable $callable);
+    public function extend(string $id, callable $callable);
 }

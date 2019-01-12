@@ -9,6 +9,9 @@ class Container implements ContainerInterface
      */
     private $container;
 
+    /**
+     * @param array $values
+     */
     public function __construct(array $values = array())
     {
         $this->container = new \Pimple\Container($values);
@@ -18,7 +21,7 @@ class Container implements ContainerInterface
      * @param string $id
      * @return mixed
      */
-    public function get($id)
+    public function get(string $id)
     {
         return $this->container[$id];
     }
@@ -27,8 +30,17 @@ class Container implements ContainerInterface
      * @param string $id
      * @param mixed $value
      */
-    public function set($id, $value)
+    public function set(string $id, $value)
     {
+        if(is_callable($value)){
+            $me = $this;
+            $result = function() use($value, $me){
+                return $value($me);
+            };
+
+            $value = $result;
+        }
+
         $this->container[$id] = $value;
     }
 
@@ -36,11 +48,11 @@ class Container implements ContainerInterface
      * @param string $id
      * @param callable $callable
      */
-    public function extend($id, callable $callable)
+    public function extend(string $id, callable $callable)
     {
         $me = $this;
         $this->container->extend($id, function($value) use($callable, $me){
-            return call_user_func_array($callable, [$value, $me]);
+            return $callable($value, $me);
         });
     }
 }
