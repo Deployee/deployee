@@ -24,11 +24,6 @@ class Locator
     private $modules;
 
     /**
-     * @var array
-     */
-    private $namespaces;
-
-    /**
      * @var ModuleClassFinder
      */
     private $moduleClassFinder;
@@ -41,7 +36,6 @@ class Locator
     {
         $this->dependencyProviderContainer = $dependencyProviderContainer;
         $this->modules = new ModuleCollection();
-        $this->namespaces = $namespaces;
         $this->moduleClassFinder = new ModuleClassFinder($namespaces);
     }
 
@@ -61,14 +55,6 @@ class Locator
     public function getDependencyProviderContainer()
     {
         return $this->dependencyProviderContainer;
-    }
-
-    /**
-     * @return array
-     */
-    public function getNamespaces()
-    {
-        return $this->namespaces;
     }
 
     public function locate(string $name): ModuleInterface
