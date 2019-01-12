@@ -29,8 +29,7 @@ class Locator
     private $namespaces;
 
     /**
-     * Locator constructor.
-     * @param DependencyProviderContainerInterface $dependencyProvider
+     * @param DependencyProviderContainerInterface $dependencyProviderContainer
      * @param array $namespaces
      */
     public function __construct(DependencyProviderContainerInterface $dependencyProviderContainer, array $namespaces = [])
