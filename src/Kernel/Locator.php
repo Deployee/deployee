@@ -40,6 +40,16 @@ class Locator
     }
 
     /**
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments): ModuleInterface
+    {
+        return $this->locate($name);
+    }
+
+    /**
      * @return DependencyProviderContainerInterface
      */
     public function getDependencyProviderContainer()
@@ -55,12 +65,7 @@ class Locator
         return $this->namespaces;
     }
 
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public function __call($name, $arguments)
+    public function locate(string $name): ModuleInterface
     {
         if(!$this->modules->hasModule($name)){
             $module = $this->createModule($name);
