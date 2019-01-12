@@ -2,7 +2,7 @@
 
 namespace Deployee\Kernel;
 
-class DependencyProviderContainer extends \Pimple\Container implements DependencyProviderContainerInterface
+class Container extends \Pimple\Container implements ContainerInterface
 {
     /**
      * @param string $id

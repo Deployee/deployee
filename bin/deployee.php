@@ -3,7 +3,7 @@
 use Deployee\Kernel\Locator;
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
-use Deployee\Kernel\DependencyProviderContainer;
+use Deployee\Kernel\Container;
 use Deployee\Kernel\KernelConstraints;
 
 $findLoader = [
@@ -27,7 +27,7 @@ if($loaderFile === ''){
 $loader = require $loaderFile;
 $namespaces = array_reverse(array_keys($loader->getPrefixesPsr4()));
 
-$dependencyProviderContainer = new DependencyProviderContainer();
+$dependencyProviderContainer = new Container();
 $locator = new Locator($dependencyProviderContainer, $namespaces);
 
 $dependencyProviderContainer[Module::CLASS_LOADER_CONTAINER_ID] = $loader;

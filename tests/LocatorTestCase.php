@@ -7,7 +7,7 @@ namespace Deployee;
 
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
-use Deployee\Kernel\DependencyProviderContainer;
+use Deployee\Kernel\Container;
 use Deployee\Kernel\Locator;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +27,7 @@ class LocatorTestCase extends TestCase
     {
         self::$classLoader = require('vendor/autoload.php');
         self::$locator = new Locator(
-            new DependencyProviderContainer([
+            new Container([
                 Module::CLASS_LOADER_CONTAINER_ID => self::$classLoader
             ]),
             array_reverse(array_keys(self::$classLoader->getPrefixesPsr4()))
