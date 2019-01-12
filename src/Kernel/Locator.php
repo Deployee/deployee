@@ -48,14 +48,6 @@ class Locator
     }
 
     /**
-     * @param string $namespace
-     */
-    public function registerNamespace($namespace)
-    {
-        array_unshift($this->namespaces, $namespace);
-    }
-
-    /**
      * @return array
      */
     public function getNamespaces()
