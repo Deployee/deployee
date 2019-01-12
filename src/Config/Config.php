@@ -3,12 +3,23 @@
 namespace Deployee\Config;
 
 
-class Config
+class Config implements ConfigInterface
 {
     /**
      * @var array|\ArrayAccess
      */
     private $params;
+
+    /**
+     * Config constructor.
+     * @param array|\ArrayAccess|null $params
+     */
+    public function __construct($params = null)
+    {
+        if($params !== null){
+            $this->setParams($params);
+        }
+    }
 
     /**
      * @param array|\ArrayAccess $params
@@ -30,6 +41,6 @@ class Config
      */
     public function get($name, $default = null)
     {
-        return isset($this->params[$name]) ? $this->params[$name] : $default;
+        return $this->params[$name] ?? $default;
     }
 }
