@@ -26,5 +26,9 @@
       "Deployee\\": "src/",
       "Deployee\\Plugins\\": "plugins/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5",
+    "roave/security-advisories": "dev-master"
   }
 }
