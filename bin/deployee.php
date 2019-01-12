@@ -1,9 +1,9 @@
 <?php
 
+use Deployee\Components\Container\Container;
 use Deployee\Kernel\Locator;
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
-use Deployee\Kernel\Container;
 use Deployee\Kernel\KernelConstraints;
 
 $findLoader = [
@@ -27,10 +27,10 @@ if($loaderFile === ''){
 $loader = require $loaderFile;
 $namespaces = array_reverse(array_keys($loader->getPrefixesPsr4()));
 
-$dependencyProviderContainer = new Container();
-$locator = new Locator($dependencyProviderContainer, $namespaces);
+$container = new Container();
+$locator = new Locator($container, $namespaces);
 
-$dependencyProviderContainer[Module::CLASS_LOADER_CONTAINER_ID] = $loader;
-$dependencyProviderContainer[KernelConstraints::LOCATOR] = $locator;
+$container[Module::CLASS_LOADER_CONTAINER_ID] = $loader;
+$container[KernelConstraints::LOCATOR] = $locator;
 
 $locator->Application()->getFacade()->runApplication();
