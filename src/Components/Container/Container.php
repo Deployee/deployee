@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Kernel;
+namespace Deployee\Components\Container;
 
 class Container implements ContainerInterface
 {

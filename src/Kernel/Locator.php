@@ -2,6 +2,7 @@
 
 namespace Deployee\Kernel;
 
+use Deployee\Components\Container\ContainerInterface;
 use Deployee\Kernel\Exceptions\ClassNotFoundException;
 use Deployee\Kernel\Exceptions\ModuleNotFoundException;
 use Deployee\Kernel\Modules\FacadeInterface;

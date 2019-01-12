@@ -7,7 +7,7 @@ namespace Deployee;
 
 use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
-use Deployee\Kernel\Container;
+use Deployee\Components\Container\Container;
 use Deployee\Kernel\Locator;
 use PHPUnit\Framework\TestCase;
 
