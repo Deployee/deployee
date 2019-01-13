@@ -15,7 +15,6 @@
     "symfony/event-dispatcher": "^3.3",
     "symfony/console": "^3.4",
     "pimple/pimple": "^3.2",
-    "monolog/monolog": "^1.24",
     "phizzl/php-mysql-command-builder": "^0.2",
     "phpdocumentor/reflection-docblock": "^3.2",
     "symfony/yaml": "^3.4",

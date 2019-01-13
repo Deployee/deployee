@@ -10,8 +10,7 @@ use Deployee\Components\Config\ConfigLoader;
 use Deployee\Components\Config\ConfigLocator;
 use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
-use Deployee\Components\Logger\Logger;
-use Deployee\Components\Logger\LoggerInterface;
+use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -28,10 +27,7 @@ class Kernel implements KernelInterface
      */
     public function __construct(string $env = KernelConstraints::ENV_PROD)
     {
-        $this->container = new Container([
-            KernelConstraints::ENV => $env,
-            LoggerInterface::class => new Logger(KernelConstraints::APPLICATION_NAME),
-        ]);
+        $this->container = new Container([KernelConstraints::ENV => $env]);
     }
 
     /**
@@ -73,6 +69,14 @@ class Kernel implements KernelInterface
         $commands = $this->container->get(CommandCollection::class);
         /* @var ArgvInput $input */
         $input = $this->container->get(ArgvInput::class);
+
+        $container = $this->container;
+        array_walk(
+            $this->container->get(KernelConstraints::PLUGIN_COLLECTION),
+            function(PluginInterface $plugin) use($container){
+                $plugin->run($container);
+            }
+        );
 
         $app->addCommands($commands->getCommands());
 
