@@ -6,6 +6,8 @@ use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
 use Deployee\Kernel\KernelConstraints;
 
+set_time_limit(0);
+
 $findLoader = [
     dirname(__DIR__) . '/vendor/autoload.php',
     dirname(__DIR__) . '/../../autoload.php',
