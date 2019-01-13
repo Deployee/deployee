@@ -1,10 +1,11 @@
 <?php
 
 use Deployee\Components\Container\Container;
+use Deployee\Kernel\Kernel;
 use Deployee\Kernel\Locator;
-use Composer\Autoload\ClassLoader;
 use Deployee\ClassLoader\Module;
 use Deployee\Kernel\KernelConstraints;
+use Symfony\Component\Console\Input\ArgvInput;
 
 set_time_limit(0);
 
@@ -25,14 +26,10 @@ if($loaderFile === ''){
     throw new \Exception("Could not find autoloader file");
 }
 
-/* @var ClassLoader $loader */
-$loader = require $loaderFile;
-$namespaces = array_reverse(array_keys($loader->getPrefixesPsr4()));
+require $loaderFile;
 
-$container = new Container();
-$locator = new Locator($container, $namespaces);
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?? KernelConstraints::ENV_PROD);
+$kernel = new Kernel($env);
 
-$container[Module::CLASS_LOADER_CONTAINER_ID] = $loader;
-$container[KernelConstraints::LOCATOR] = $locator;
-
-$locator->Application()->getFacade()->runApplication();
+return $kernel->boot()->run();
