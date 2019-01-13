@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Config;
+namespace Deployee\Components\Config;
 
 interface ConfigInterface
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Deployee\Config;
+namespace Deployee\Components\Config;
 
 
 class ConfigLocator
