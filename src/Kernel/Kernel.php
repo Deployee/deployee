@@ -36,11 +36,6 @@ class Kernel implements KernelInterface
      */
     public function boot(): self
     {
-        $this->container->set(ConfigInterface::class, function(){
-            return (new ConfigLoader())->load($this->getConfigFilepath());
-        });
-
-        $this->container->set(CommandCollection::class, new CommandCollection());
         $this->container->set(ArgvInput::class, function(){
             $args = array_filter($_SERVER['argv'], function($val){
                 return strpos($val, '-e=') !== 0
@@ -49,6 +44,14 @@ class Kernel implements KernelInterface
 
             return new ArgvInput($args);
         });
+
+        $configFilepath = $this->getConfigFilepath();
+        $this->container->set(KernelConstraints::WORKDIR, dirname($configFilepath));
+        $this->container->set(ConfigInterface::class, function() use($configFilepath){
+            return (new ConfigLoader())->load($configFilepath);
+        });
+
+        $this->container->set(CommandCollection::class, new CommandCollection());
         $this->container->set(Application::class, new Application());
 
         $pluginLoader = new PluginLoader($this->container);
@@ -71,8 +74,9 @@ class Kernel implements KernelInterface
         $input = $this->container->get(ArgvInput::class);
 
         $container = $this->container;
+        $pluginCollection = $this->container->get(KernelConstraints::PLUGIN_COLLECTION);
         array_walk(
-            $this->container->get(KernelConstraints::PLUGIN_COLLECTION),
+            $pluginCollection,
             function(PluginInterface $plugin) use($container){
                 $plugin->run($container);
             }
