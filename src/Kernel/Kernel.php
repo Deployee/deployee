@@ -5,14 +5,14 @@ namespace Deployee\Kernel;
 
 use Deployee\Components\Application\Application;
 use Deployee\Components\Application\CommandCollection;
+use Deployee\Components\Config\ConfigInterface;
+use Deployee\Components\Config\ConfigLoader;
+use Deployee\Components\Config\ConfigLocator;
 use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Logger\Logger;
 use Deployee\Components\Logger\LoggerInterface;
 use Deployee\Components\Plugins\PluginLoader;
-use Deployee\Config\ConfigInterface;
-use Deployee\Config\ConfigLoader;
-use Deployee\Config\ConfigLocator;
 use Symfony\Component\Console\Input\ArgvInput;
 
 class Kernel implements KernelInterface
