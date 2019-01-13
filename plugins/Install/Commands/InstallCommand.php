@@ -1,13 +1,14 @@
 <?php
 
-namespace Deployee\Plugins\Deploy\Commands;
+namespace Deployee\Plugins\Install\Commands;
 
 use Deployee\Components\Application\Command;
 use Deployee\Components\Config\ConfigInterface;
 use Deployee\Kernel\KernelConstraints;
-use Deployee\Plugins\RunDeploy\Events\RunInstallCommandEvent;
+use Deployee\Plugins\Install\Events\RunInstallCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class InstallCommand extends Command
 {
@@ -40,10 +41,9 @@ class InstallCommand extends Command
             exit(255);
         }
 
-        die("TEST");
-
-        $event = new RunInstallCommandEvent();
-        $this->locator->Events()->getFacade()->dispatchEvent(RunInstallCommandEvent::class, $event);
+        /* @var EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get(EventDispatcher::class);
+        $dispatcher->dispatch(RunInstallCommandEvent::class, new RunInstallCommandEvent());
 
         $output->writeln('Finished installing');
     }

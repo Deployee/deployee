@@ -1,15 +1,15 @@
 <?php
 
 
-namespace Deployee\Plugins\Deploy;
+namespace Deployee\Plugins\Install;
 
 
 use Deployee\Components\Application\CommandCollection;
 use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Plugins\PluginInterface;
-use Deployee\Plugins\Deploy\Commands\InstallCommand;
+use Deployee\Plugins\Install\Commands\InstallCommand;
 
-class DeployPlugin implements PluginInterface
+class InstallPlugin implements PluginInterface
 {
     public function boot(ContainerInterface $container)
     {
