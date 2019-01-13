@@ -12,6 +12,7 @@ use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 
 class Kernel implements KernelInterface
@@ -66,14 +67,19 @@ class Kernel implements KernelInterface
      */
     public function run()
     {
+        $container = $this->container;
         /* @var Application $app */
         $app = $this->container->get(Application::class);
-        /* @var CommandCollection $commands */
-        $commands = $this->container->get(CommandCollection::class);
+        $commands = $this->container->get(CommandCollection::class)->getCommands();
+
+        array_walk($commands, function(Command $cmd) use($container){
+            if($cmd instanceof \Deployee\Components\Application\Command){
+                $cmd->setContainer($container);
+            }
+        });
+
         /* @var ArgvInput $input */
         $input = $this->container->get(ArgvInput::class);
-
-        $container = $this->container;
         $pluginCollection = $this->container->get(KernelConstraints::PLUGIN_COLLECTION);
         array_walk(
             $pluginCollection,
@@ -82,7 +88,7 @@ class Kernel implements KernelInterface
             }
         );
 
-        $app->addCommands($commands->getCommands());
+        $app->addCommands($commands);
 
         return $app->run($input);
     }
