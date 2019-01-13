@@ -17,11 +17,11 @@
     "pimple/pimple": "^3.2",
     "phizzl/php-mysql-command-builder": "^0.2",
     "phpdocumentor/reflection-docblock": "^3.2",
-    "symfony/yaml": "^3.4",
-    "symfony/finder": "^3.4",
     "symfony/dotenv": "^3.4",
     "deployee/container": "dev-master",
-    "deployee/plugins": "dev-master"
+    "deployee/plugins": "dev-master",
+    "deployee/application": "dev-master",
+    "deployee/config": "dev-master"
   },
   "autoload": {
     "psr-4": {
