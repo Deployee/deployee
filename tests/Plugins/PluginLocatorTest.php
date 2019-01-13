@@ -15,7 +15,7 @@ class PluginLocatorTest extends TestCase
         $locator = new PluginLocator();
         $plugins = $locator->locatePlugins();
 
-        $this->assertIsArray($plugins);
+        $this->assertTrue(is_array($plugins));
         $this->assertContains(TestPluginPlugin::class, $plugins);
     }
 }

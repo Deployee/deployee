@@ -15,7 +15,7 @@ class ModuleClassFinderTest extends TestCase
         $finder = new ModuleClassFinder(['Deployee\\']);
         $result = $finder->findClass('Kernel\\ModuleClassFinder');
 
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertSame(1, count($result));
         $this->assertSame(ModuleClassFinder::class, current($result));
     }
@@ -25,7 +25,7 @@ class ModuleClassFinderTest extends TestCase
         $finder = new ModuleClassFinder(['Deployee\\']);
         $result = $finder->findClass('Kernel\\DoesNotExist');
 
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertSame(0, count($result));
     }
 
@@ -34,7 +34,7 @@ class ModuleClassFinderTest extends TestCase
         $finder = new ModuleClassFinder(['Deployee\\']);
         $result = $finder->findClassImplementingInterface('Kernel\\Modules\\Module', ModuleInterface::class);
 
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertSame(1, count($result));
         $this->assertSame(Module::class, current($result));
         $this->assertContains(ModuleInterface::class, class_implements(current($result)));
