@@ -14,6 +14,7 @@ use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Kernel implements KernelInterface
 {
@@ -54,6 +55,7 @@ class Kernel implements KernelInterface
 
         $this->container->set(CommandCollection::class, new CommandCollection());
         $this->container->set(Application::class, new Application());
+        $this->container->set(EventDispatcher::class, new EventDispatcher());
 
         $pluginLoader = new PluginLoader($this->container);
         $this->container->set(KernelConstraints::PLUGIN_COLLECTION, $pluginLoader->loadPlugins());
