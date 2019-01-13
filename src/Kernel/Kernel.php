@@ -103,6 +103,7 @@ class Kernel implements KernelInterface
         $locator = new ConfigLocator();
         return $locator->locate([
             dirname(__DIR__) . '/..',
+            dirname(__DIR__) . '/../.deployee',
             dirname(__DIR__) . '/../../../../.deployee',
             dirname(__DIR__) . '/../../../..',
         ]);
