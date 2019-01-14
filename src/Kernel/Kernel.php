@@ -48,10 +48,6 @@ class Kernel implements KernelInterface
             return new ArgvInput($args);
         });
 
-        $this->container->set(ClassLoader::class, function(){
-            return require('vendor/autoload.php');
-        });
-
         $configFilepath = $this->getConfigFilepath();
         $this->container->set(KernelConstraints::WORKDIR, dirname($configFilepath));
         $this->container->set(ConfigInterface::class, function() use($configFilepath){
