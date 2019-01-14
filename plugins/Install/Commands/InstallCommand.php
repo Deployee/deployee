@@ -31,7 +31,7 @@ class InstallCommand extends Command
 
         /* @var ConfigInterface $config */
         $config = $this->container->get(ConfigInterface::class);
-        $path = $config->get('definition_path', 'migrations');
+        $path = $config->get('deploy_definition_path', 'definitions');
         $path = (strpos($path, '/') !== 0)
             ? $this->container->get(KernelConstraints::WORKDIR) . DIRECTORY_SEPARATOR . $path
             : $path;
