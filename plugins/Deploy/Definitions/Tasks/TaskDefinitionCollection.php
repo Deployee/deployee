@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Deployment\Definitions\Tasks;
+namespace Deployee\Plugins\Deploy\Definitions\Tasks;
 
 
 class TaskDefinitionCollection implements TaskDefinitionCollectionInterface
@@ -29,7 +29,7 @@ class TaskDefinitionCollection implements TaskDefinitionCollectionInterface
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->tasks;
     }

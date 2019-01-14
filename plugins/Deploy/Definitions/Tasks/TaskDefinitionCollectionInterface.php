@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Deployment\Definitions\Tasks;
+namespace Deployee\Plugins\Deploy\Definitions\Tasks;
 
 interface TaskDefinitionCollectionInterface
 {
@@ -10,7 +10,7 @@ interface TaskDefinitionCollectionInterface
     public function addTaskDefinition(TaskDefinitionInterface $task);
 
     /**
-     * @return array
+     * @return TaskDefinitionInterface[]
      */
-    public function toArray();
+    public function toArray(): array;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Deployment\Definitions\Parameter;
+namespace Deployee\Plugins\Deploy\Definitions\Parameter;
 
 
 class ParameterCollection implements ParameterCollectionInterface

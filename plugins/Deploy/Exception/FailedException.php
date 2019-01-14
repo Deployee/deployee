@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Exception;
+namespace Deployee\Plugins\Deploy\Exception;
 
 
 class FailedException extends \Exception

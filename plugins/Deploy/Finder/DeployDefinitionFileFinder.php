@@ -28,9 +28,9 @@ class DeployDefinitionFileFinder
     }
 
     /**
-     * @return array
+     * @return \ArrayObject
      */
-    public function getClassMap()
+    public function find(): \ArrayObject
     {
         $this->finder
             ->files()
@@ -43,7 +43,7 @@ class DeployDefinitionFileFinder
             })
             ->in([$this->searchRoot]);
 
-        $classMap = [];
+        $classMap = new \ArrayObject();
         foreach($this->finder as $file){
             $filename = $file->getBasename();
             $className = substr($filename, 0, strrpos($filename, '.'));
