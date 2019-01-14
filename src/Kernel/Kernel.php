@@ -3,6 +3,7 @@
 
 namespace Deployee\Kernel;
 
+use Composer\Autoload\ClassLoader;
 use Deployee\Components\Application\Application;
 use Deployee\Components\Application\CommandCollection;
 use Deployee\Components\Config\ConfigInterface;
@@ -45,6 +46,10 @@ class Kernel implements KernelInterface
             });
 
             return new ArgvInput($args);
+        });
+
+        $this->container->set(ClassLoader::class, function(){
+            return require('vendor/autoload.php');
         });
 
         $configFilepath = $this->getConfigFilepath();
