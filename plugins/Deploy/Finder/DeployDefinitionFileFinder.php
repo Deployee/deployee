@@ -1,16 +1,17 @@
 <?php
 
-namespace Deployee\Deployment\Finder;
-
+namespace Deployee\Plugins\Deploy\Finder;
 
 use Symfony\Component\Finder\Finder;
 
-class DeploymentDefinitionClassMapFinder
+class DeployDefinitionFileFinder
 {
+    const DEPLOY_FILENAME_PATTERN = '/^(DeployDefinition\_|Deploy\_).*\.php$/';
+
     /**
      * @var string
      */
-    private $basepath;
+    private $searchRoot;
 
     /**
      * @var Finder
@@ -18,12 +19,11 @@ class DeploymentDefinitionClassMapFinder
     private $finder;
 
     /**
-     * DeploymentDefinitionFinder constructor.
-     * @param string $basepath
+     * @param string $searchRoot
      */
-    public function __construct($basepath)
+    public function __construct(string $searchRoot)
     {
-        $this->basepath = $basepath;
+        $this->searchRoot = $searchRoot;
         $this->finder = new Finder();
     }
 
@@ -34,14 +34,14 @@ class DeploymentDefinitionClassMapFinder
     {
         $this->finder
             ->files()
-            ->name('/^(DeployDefinition\_|Deploy\_).*\.php$/')
+            ->name(self::DEPLOY_FILENAME_PATTERN)
             ->depth("<= 1")
             ->sort(function(\SplFileInfo $a, \SplFileInfo $b){
                 $sortNameA = substr($a->getBasename(), strpos($a->getBasename(), '_')+1);
                 $sortNameB = substr($b->getBasename(), strpos($b->getBasename(), '_')+1);
                 return strcmp($sortNameA, $sortNameB);
             })
-            ->in([$this->basepath]);
+            ->in([$this->searchRoot]);
 
         $classMap = [];
         foreach($this->finder as $file){
