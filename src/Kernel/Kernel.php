@@ -11,7 +11,6 @@ use Deployee\Components\Config\ConfigLocator;
 use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Dependency\ContainerResolver;
-use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
