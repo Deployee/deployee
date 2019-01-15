@@ -19,6 +19,16 @@ class DispatcherCollection
     }
 
     /**
+     * @param TaskDefinitionDispatcherInterface[] $collection
+     */
+    public function addDispatcherArray(array $collection)
+    {
+        foreach($collection as $dispatcher){
+            $this->addDispatcher($dispatcher);
+        }
+    }
+
+    /**
      * @param TaskDefinitionDispatcherInterface $dispatcher
      */
     public function addDispatcher(TaskDefinitionDispatcherInterface $dispatcher)
