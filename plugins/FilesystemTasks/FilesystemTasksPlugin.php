@@ -21,6 +21,10 @@ class FilesystemTasksPlugin implements PluginInterface
 
     }
 
+    /**
+     * @param ContainerInterface $container
+     * @throws \ReflectionException
+     */
     public function configure(ContainerInterface $container)
     {
         /* @var TaskCreationHelper $helper */
