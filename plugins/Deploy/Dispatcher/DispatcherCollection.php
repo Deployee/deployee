@@ -1,9 +1,7 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Dispatcher;
+namespace Deployee\Plugins\Deploy\Dispatcher;
 
-
-use Deployee\Dispatcher\TaskDispatcherInterface;
 
 class DispatcherCollection
 {
@@ -21,7 +19,7 @@ class DispatcherCollection
     }
 
     /**
-     * @param TaskDispatcherInterface $dispatcher
+     * @param TaskDefinitionDispatcherInterface $dispatcher
      */
     public function addDispatcher(TaskDefinitionDispatcherInterface $dispatcher)
     {
@@ -29,9 +27,9 @@ class DispatcherCollection
     }
 
     /**
-     * @return array
+     * @return TaskDefinitionDispatcherInterface[]
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->dispatcher;
     }

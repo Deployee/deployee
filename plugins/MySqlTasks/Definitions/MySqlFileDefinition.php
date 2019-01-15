@@ -5,7 +5,7 @@ namespace Deployee\Plugins\MySqlTasks\Definitions;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class MySqlFileDefinition extends AbstractTaskDefinition
+class MySqlFileDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string

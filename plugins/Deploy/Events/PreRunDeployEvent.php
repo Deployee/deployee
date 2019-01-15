@@ -14,18 +14,12 @@ class PreRunDeployEvent extends Event
     private $input;
 
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
      * @param InputInterface $input
      * @param ContainerInterface $container
      */
-    public function __construct(InputInterface $input, ContainerInterface $container)
+    public function __construct(InputInterface $input)
     {
         $this->input = $input;
-        $this->container = $container;
     }
 
     /**
@@ -34,13 +28,5 @@ class PreRunDeployEvent extends Event
     public function getInput(): InputInterface
     {
         return $this->input;
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    public function getContainer(): ContainerInterface
-    {
-        return $this->container;
     }
 }

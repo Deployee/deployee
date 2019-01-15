@@ -7,7 +7,7 @@ use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollectionInterface;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class CreateAdminUserDefinition extends AbstractTaskDefinition
+class CreateAdminUserDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string

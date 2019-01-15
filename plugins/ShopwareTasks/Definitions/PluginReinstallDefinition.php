@@ -6,7 +6,7 @@ namespace Deployee\Plugins\ShopwareTasks\Definitions;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class PluginReinstallDefinition extends AbstractTaskDefinition
+class PluginReinstallDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string

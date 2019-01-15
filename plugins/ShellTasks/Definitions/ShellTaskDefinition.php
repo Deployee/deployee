@@ -6,7 +6,7 @@ namespace Deployee\Plugins\ShellTasks\Definitions;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class ShellTaskDefinition extends AbstractTaskDefinition
+class ShellTaskDefinition implements TaskDefinitionInterface
 {
     /**
      * @var ParameterCollection

@@ -6,7 +6,7 @@ namespace Deployee\Plugins\ShopwareTasks\Definitions;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class PluginUpdateDefinition extends AbstractTaskDefinition
+class PluginUpdateDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string

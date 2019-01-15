@@ -1,6 +1,6 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Dispatcher;
+namespace Deployee\Plugins\Deploy\Dispatcher;
 
 
 class DispatchResult implements DispatchResultInterface
@@ -26,7 +26,7 @@ class DispatchResult implements DispatchResultInterface
      * @param string $stdOutput
      * @param string $errOutput
      */
-    public function __construct($exitCode, $stdOutput, $errOutput = '')
+    public function __construct(int $exitCode, string $stdOutput, string $errOutput = '')
     {
         $this->exitCode = $exitCode;
         $this->stdOutput = $stdOutput;
@@ -36,7 +36,7 @@ class DispatchResult implements DispatchResultInterface
     /**
      * @return int
      */
-    public function getExitCode()
+    public function getExitCode(): int
     {
         return $this->exitCode;
     }
@@ -44,7 +44,7 @@ class DispatchResult implements DispatchResultInterface
     /**
      * @return string
      */
-    public function getOutput()
+    public function getOutput(): string
     {
         return $this->stdOutput;
     }
@@ -52,7 +52,7 @@ class DispatchResult implements DispatchResultInterface
     /**
      * @return string
      */
-    public function getErrorOutput()
+    public function getErrorOutput(): string
     {
         return $this->errOutput;
     }

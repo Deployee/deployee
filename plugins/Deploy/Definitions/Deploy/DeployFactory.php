@@ -5,32 +5,32 @@ namespace Deployee\Plugins\Deploy\Definitions\Deploy;
 
 
 use Deployee\Components\Container\ContainerInterface;
+use Deployee\Components\Dependency\ContainerResolver;
 
 class DeployFactory
 {
     /**
-     * @var ContainerInterface
+     * @var ContainerResolver
      */
-    private $container;
+    private $resolver;
 
     /**
-     * @param ContainerInterface $container
+     * @param ContainerResolver $resolver
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerResolver $resolver)
     {
-        $this->container = $container;
+        $this->resolver = $resolver;
     }
 
     /**
      * @param string $class
      * @return DeployDefinitionInterface
+     * @throws \ReflectionException
      */
     public function createDeploy(string $class): DeployDefinitionInterface
     {
         /* @var DeployDefinitionInterface $object */
-        $object = new $class;
-        $object->setContainer($this->container);
-
+        $object = $this->resolver->createInstance($class);
         return $object;
     }
 }

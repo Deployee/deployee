@@ -7,7 +7,7 @@ use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Parameter\ParameterCollectionInterface;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class ShopwareCommandDefinition extends AbstractTaskDefinition
+class ShopwareCommandDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string

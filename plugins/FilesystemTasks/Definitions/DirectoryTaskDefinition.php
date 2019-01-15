@@ -5,9 +5,9 @@ namespace Deployee\Plugins\FilesystemTasks\Definitions;
 
 use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
 use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
-use Deployee\Plugins\Deploy\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
-class DirectoryTaskDefinition extends AbstractTaskDefinition
+class DirectoryTaskDefinition implements TaskDefinitionInterface
 {
     /**
      * @var ParameterCollectionInterface

@@ -3,7 +3,6 @@
 
 namespace Deployee\Kernel;
 
-use Composer\Autoload\ClassLoader;
 use Deployee\Components\Application\Application;
 use Deployee\Components\Application\CommandCollection;
 use Deployee\Components\Config\ConfigInterface;
@@ -11,10 +10,12 @@ use Deployee\Components\Config\ConfigLoader;
 use Deployee\Components\Config\ConfigLocator;
 use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
+use Deployee\Components\Dependency\ContainerResolver;
 use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Kernel implements KernelInterface
@@ -39,7 +40,7 @@ class Kernel implements KernelInterface
      */
     public function boot(): self
     {
-        $this->container->set(ArgvInput::class, function(){
+        $this->container->set(InputInterface::class, function(){
             $args = array_filter($_SERVER['argv'], function($val){
                 return strpos($val, '-e=') !== 0
                     && strpos($val, '--env=') !== 0;
@@ -54,12 +55,17 @@ class Kernel implements KernelInterface
             return (new ConfigLoader())->load($configFilepath);
         });
 
+        $this->container->set(ContainerResolver::class, function(ContainerInterface $container){
+            return new ContainerResolver($container);
+        });
+
         $this->container->set(CommandCollection::class, new CommandCollection());
         $this->container->set(Application::class, new Application());
         $this->container->set(EventDispatcher::class, new EventDispatcher());
 
         $pluginLoader = new PluginLoader($this->container);
         $this->container->set(KernelConstraints::PLUGIN_COLLECTION, $pluginLoader->loadPlugins());
+
 
         return $this;
     }
@@ -68,7 +74,7 @@ class Kernel implements KernelInterface
      * @return int
      * @throws \Exception
      */
-    public function run()
+    public function run(): int
     {
         $container = $this->container;
         /* @var Application $app */
@@ -76,22 +82,14 @@ class Kernel implements KernelInterface
         $commands = $this->container->get(CommandCollection::class)->getCommands();
 
         array_walk($commands, function(Command $cmd) use($container){
-            if($cmd instanceof \Deployee\Components\Application\Command){
-                $cmd->setContainer($container);
-            }
+            /* @var ContainerResolver $resolver */
+            $resolver = $container->get(ContainerResolver::class);
+            $resolver->autowireObject($cmd);
         });
-
-        /* @var ArgvInput $input */
-        $input = $this->container->get(ArgvInput::class);
-        $pluginCollection = $this->container->get(KernelConstraints::PLUGIN_COLLECTION);
-        array_walk(
-            $pluginCollection,
-            function(PluginInterface $plugin) use($container){
-                $plugin->run($container);
-            }
-        );
-
         $app->addCommands($commands);
+
+        /* @var InputInterface $input */
+        $input = $this->container->get(InputInterface::class);
 
         return $app->run($input);
     }

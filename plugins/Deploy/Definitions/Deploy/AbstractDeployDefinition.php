@@ -3,7 +3,6 @@
 
 namespace Deployee\Plugins\Deploy\Definitions\Deploy;
 
-use Deployee\Components\Container\ContainerInterface;
 use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionCollection;
 use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionCollectionInterface;
 use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
@@ -17,24 +16,17 @@ abstract class AbstractDeployDefinition implements DeployDefinitionInterface
     private $tasks;
 
     /**
-     * @var ContainerInterface
+     * @var TaskCreationHelper
      */
-    protected $container;
+    private $taskCreationHelper;
 
     /**
-     * AbstractDeployment constructor.
+     * @param TaskCreationHelper $taskCreationHelper
      */
-    public function __construct()
+    public function __construct(TaskCreationHelper $taskCreationHelper)
     {
+        $this->taskCreationHelper = $taskCreationHelper;
         $this->tasks = new TaskDefinitionCollection();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
     }
 
     /**
@@ -61,13 +53,9 @@ abstract class AbstractDeployDefinition implements DeployDefinitionInterface
      */
     public function __call(string $alias, array $arguments): TaskDefinitionInterface
     {
-        /* @var TaskCreationHelper $helper */
-        $helper = $this->container->get(TaskCreationHelper::class);
-        $task = $helper->createTaskDefinition($alias, $arguments);
+        $task = $this->taskCreationHelper->createTaskDefinition($alias, $arguments);
         $this->addTaskDefinition($task);
 
         return $task;
     }
-
-
 }

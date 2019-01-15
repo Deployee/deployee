@@ -2,11 +2,11 @@
 
 namespace Deployee\Plugins\FilesystemTasks\Definitions;
 
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
-
-class PermissionsTaskDefinition extends AbstractTaskDefinition
+class PermissionsTaskDefinition implements TaskDefinitionInterface
 {
     /**
      * @var ParameterCollection
@@ -17,7 +17,7 @@ class PermissionsTaskDefinition extends AbstractTaskDefinition
      * DirectoryTask constructor.
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->parameter = new ParameterCollection([
             'path' => $path
@@ -28,7 +28,7 @@ class PermissionsTaskDefinition extends AbstractTaskDefinition
      * @param int $permissions
      * @return $this
      */
-    public function permissions($permissions)
+    public function permissions($permissions): self
     {
         $this->parameter->set('permissions', $permissions);
         return $this;
@@ -38,7 +38,7 @@ class PermissionsTaskDefinition extends AbstractTaskDefinition
      * @param string $owner
      * @return $this
      */
-    public function owner($owner)
+    public function owner($owner): self
     {
         $this->parameter->set('owner', $owner);
         return $this;
@@ -48,7 +48,7 @@ class PermissionsTaskDefinition extends AbstractTaskDefinition
      * @param string $group
      * @return $this
      */
-    public function group($group)
+    public function group($group): self
     {
         $this->parameter->set('group', $group);
         return $this;
@@ -58,16 +58,16 @@ class PermissionsTaskDefinition extends AbstractTaskDefinition
      * @param bool $recursive
      * @return $this
      */
-    public function recursive()
+    public function recursive(): self
     {
         $this->parameter->set('recursive', true);
         return $this;
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return $this->parameter;
     }

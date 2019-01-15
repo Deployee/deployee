@@ -13,13 +13,13 @@ class InstallPlugin implements PluginInterface
 {
     public function boot(ContainerInterface $container)
     {
-        /* @var CommandCollection $collection */
-        $collection = $container->get(CommandCollection::class);
-        $collection->addCommand(new InstallCommand());
+
     }
 
-    public function run(ContainerInterface $container)
+    public function configure(ContainerInterface $container)
     {
-
+        /* @var CommandCollection $commandCollection */
+        $commandCollection = $container->get(CommandCollection::class);
+        $commandCollection->addCommand(new InstallCommand());
     }
 }

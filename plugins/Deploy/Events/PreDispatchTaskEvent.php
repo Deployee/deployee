@@ -1,12 +1,12 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Events;
+namespace Deployee\Plugins\Deploy\Events;
 
 
-use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Events\AbstractEvent;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class PreDispatchTaskEvent extends AbstractEvent
+class PreDispatchTaskEvent extends Event
 {
     /**
      * @var TaskDefinitionInterface
@@ -31,7 +31,7 @@ class PreDispatchTaskEvent extends AbstractEvent
     /**
      * @return TaskDefinitionInterface
      */
-    public function getTask()
+    public function getTask(): TaskDefinitionInterface
     {
         return $this->task;
     }
@@ -39,7 +39,7 @@ class PreDispatchTaskEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isPreventDispatch()
+    public function isPreventDispatch(): bool
     {
         return $this->preventDispatch;
     }
@@ -47,7 +47,7 @@ class PreDispatchTaskEvent extends AbstractEvent
     /**
      * @param bool $preventDispatch
      */
-    public function setPreventDispatch($preventDispatch)
+    public function setPreventDispatch(bool $preventDispatch)
     {
         $this->preventDispatch = $preventDispatch;
     }

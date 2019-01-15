@@ -3,22 +3,92 @@
 namespace Deployee\Plugins\Deploy\Commands;
 
 use Composer\Autoload\ClassLoader;
-use Deployee\Components\Application\Command;
+use Deployee\Components\Container\ContainerInterface;
 use Deployee\Plugins\Deploy\Definitions\Deploy\DeployFactory;
 use Deployee\Plugins\Deploy\Definitions\Deploy\DeployDefinitionInterface;
 use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Deployee\Plugins\Deploy\Dispatcher\DispatcherFinder;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResult;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
 use Deployee\Plugins\Deploy\Events\FindExecutableDefinitionFilesEvent;
+use Deployee\Plugins\Deploy\Events\PreDispatchTaskEvent;
 use Deployee\Plugins\Deploy\Events\PreRunDeployEvent;
 use Deployee\Plugins\Deploy\Exception\FailedException;
 use Deployee\Plugins\Deploy\Finder\DeployDefinitionFileFinder;
 use Deployee\Plugins\Deploy\Events\PreDispatchDeploymentEvent;
 use Deployee\Plugins\Deploy\Events\PostDispatchDeploymentEvent;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class DeployRunCommand extends Command
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var DispatcherFinder
+     */
+    private $dispatcherFinder;
+
+    /**
+     * @var DeployFactory
+     */
+    private $deployFactory;
+
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var DeployDefinitionFileFinder
+     */
+    private $deployDefinitionFileFinder;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @param DispatcherFinder $dispatcherFinder
+     */
+    public function setDispatcherFinder(DispatcherFinder $dispatcherFinder)
+    {
+        $this->dispatcherFinder = $dispatcherFinder;
+    }
+
+    /**
+     * @param DeployFactory $deployFactory
+     */
+    public function setDeployFactory(DeployFactory $deployFactory)
+    {
+        $this->deployFactory = $deployFactory;
+    }
+
+    /**
+     * @param EventDispatcher $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @param DeployDefinitionFileFinder $deployDefinitionFileFinder
+     */
+    public function setDeployDefinitionFileFinder(DeployDefinitionFileFinder $deployDefinitionFileFinder)
+    {
+        $this->deployDefinitionFileFinder = $deployDefinitionFileFinder;
+    }
+
     /**
      * @inheritdoc
      */
@@ -31,14 +101,12 @@ class DeployRunCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int|void|null
+     * @throws \ReflectionException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /* @var DeployFactory $deployFactory */
-        $deployFactory = $this->container->get(DeployFactory::class);
-        /* @var EventDispatcher $dispatcher */
-        $dispatcher = $this->container->get(EventDispatcher::class);
-        $dispatcher->dispatch(PreRunDeployEvent::class, new PreRunDeployEvent($input, $this->container));
+        $this->eventDispatcher->dispatch(PreRunDeployEvent::class, new PreRunDeployEvent($input));
 
         $definitions = $this->getExecutableDefinitions($input, $output);
         $output->writeln(sprintf('Executing %s definitions', count($definitions)));
@@ -56,9 +124,9 @@ class DeployRunCommand extends Command
             }
 
             $output->writeln(sprintf('Execute definition %s', $className), OutputInterface::VERBOSITY_VERBOSE);
-            $deployDefinition = $deployFactory->createDeploy($className);
+            $deployDefinition = $this->deployFactory->createDeploy($className);
             $event = new PreDispatchDeploymentEvent($deployDefinition);
-            $dispatcher->dispatch(PreDispatchDeploymentEvent::class, $event);
+            $this->eventDispatcher->dispatch(PreDispatchDeploymentEvent::class, $event);
 
             try {
                 if (($exitCode = $this->runDeploymentDefinition($deployDefinition, $output)) !== 0) {
@@ -74,7 +142,7 @@ class DeployRunCommand extends Command
                 $exitCode = 5;
             }
             finally {
-                $dispatcher->dispatch(
+                $this->eventDispatcher->dispatch(
                     PostDispatchDeploymentEvent::class,
                     new PostDispatchDeploymentEvent($deployDefinition, $success)
                 );
@@ -108,7 +176,7 @@ class DeployRunCommand extends Command
                 sprintf('Executing %s => %s', get_class($deployDefinition), get_class($taskDefinition)),
                 OutputInterface::VERBOSITY_DEBUG
             );
-            continue;
+
             $result = $this->runTaskDefinition($taskDefinition, $output);
 
             if($result->getExitCode() > 0){
@@ -124,18 +192,18 @@ class DeployRunCommand extends Command
      * @param TaskDefinitionInterface $taskDefinition
      * @param OutputInterface $output
      * @return DispatchResultInterface
-     * @throws FailedException
+     * @throws \Deployee\Plugins\Deploy\Exception\DispatcherException
      */
-    private function runTaskDefinition(TaskDefinitionInterface $taskDefinition, OutputInterface $output){
+    private function runTaskDefinition(TaskDefinitionInterface $taskDefinition, OutputInterface $output): DispatchResultInterface{
+
         $event = new PreDispatchTaskEvent($taskDefinition);
-        $this->locator->Events()->getFacade()->dispatchEvent(PreDispatchTaskEvent::class, $event);
+        $this->eventDispatcher->dispatch(PreDispatchTaskEvent::class, $event);
 
         if($event->isPreventDispatch() === true){
             return new DispatchResult(0, 'Skipped execution of task definition', '');
         }
 
-        /* @var DispatcherFinder $finder */
-        $finder = $this->locator->Dependency()->getFacade()->getDependency(Module::DISPATCHER_FINDER_DEPENDENCY);
+        $finder = new DispatcherFinder($this->container);
         $dispatcher = $finder->findTaskDispatcherByDefinition($taskDefinition);
         $result = $dispatcher->dispatch($taskDefinition);
 
@@ -153,24 +221,22 @@ class DeployRunCommand extends Command
         if($result->getOutput()) {
             $output->writeln($result->getOutput(), OutputInterface::VERBOSITY_VERBOSE);
         }
-
+die('DISPATCHED');
         $this->locator->Events()->getFacade()->dispatchEvent(PostDispatchTaskEvent::class, new PostDispatchTaskEvent($taskDefinition, $result));
 
         return $result;
     }
 
     /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return \ArrayObject
      */
     private function getExecutableDefinitions(InputInterface $input, OutputInterface $output): \ArrayObject
     {
-        /* @var DeployDefinitionFileFinder $finder */
-        $finder = $this->container->get(DeployDefinitionFileFinder::class);
-        /* @var EventDispatcher $dispatcher */
-        $dispatcher = $this->container->get(EventDispatcher::class);
-        $event = new FindExecutableDefinitionFilesEvent($finder->find(), $input, $output);
+        $event = new FindExecutableDefinitionFilesEvent($this->deployDefinitionFileFinder->find(), $input, $output);
 
-        $dispatcher->dispatch(FindExecutableDefinitionFilesEvent::class, $event);
+        $this->eventDispatcher->dispatch(FindExecutableDefinitionFilesEvent::class, $event);
 
         /* @var ClassLoader $classLoader */
         $classLoader = require('vendor/autoload.php');
