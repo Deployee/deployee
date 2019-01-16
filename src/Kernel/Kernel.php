@@ -62,7 +62,6 @@ class Kernel implements KernelInterface
             return new Environment($envName, dirname($configFilepath));
         });
 
-        $this->container->set(KernelConstraints::WORKDIR, dirname($configFilepath));
         $this->container->set(ConfigInterface::class, function() use($configFilepath){
             return (new ConfigLoader())->load($configFilepath);
         });

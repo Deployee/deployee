@@ -17,6 +17,4 @@ abstract class KernelConstraints
     const APPLICATION_NAME = 'Deployee';
 
     const PLUGIN_COLLECTION = 'plugincollection';
-
-    const WORKDIR = 'workdir';
 }
