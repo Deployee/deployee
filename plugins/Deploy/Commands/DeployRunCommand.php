@@ -11,12 +11,14 @@ use Deployee\Plugins\Deploy\Dispatcher\DispatcherFinder;
 use Deployee\Plugins\Deploy\Dispatcher\DispatchResult;
 use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
 use Deployee\Plugins\Deploy\Events\FindExecutableDefinitionFilesEvent;
+use Deployee\Plugins\Deploy\Events\PostRunDeploy;
 use Deployee\Plugins\Deploy\Events\PreDispatchTaskEvent;
 use Deployee\Plugins\Deploy\Events\PreRunDeployEvent;
 use Deployee\Plugins\Deploy\Exception\FailedException;
 use Deployee\Plugins\Deploy\Finder\DeployDefinitionFileFinder;
 use Deployee\Plugins\Deploy\Events\PreDispatchDeploymentEvent;
 use Deployee\Plugins\Deploy\Events\PostDispatchDeploymentEvent;
+use Deployee\Plugins\Deploy\Events\PostDispatchTaskEvent;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -113,28 +115,27 @@ class DeployRunCommand extends Command
         $success = true;
         $exitCode = 0;
 
-        foreach($definitions as $className){
-            if(!class_exists($className) || !in_array(DeployDefinitionInterface::class, class_implements($className), false)){
+        foreach($definitions as $definitionClass){
+            if(!class_exists($definitionClass) || !in_array(DeployDefinitionInterface::class, class_implements($definitionClass), false)){
                 $output->write(sprintf(
                     'WARNING: Skipping definition %s since it does not implement %s',
-                    $className,
+                    $definitionClass,
                     DeployDefinitionInterface::class
                 ));
                 continue;
             }
 
-            $output->writeln(sprintf('Execute definition %s', $className), OutputInterface::VERBOSITY_VERBOSE);
-            $deployDefinition = $this->deployFactory->createDeploy($className);
+            $output->writeln(sprintf('Execute definition %s', $definitionClass), OutputInterface::VERBOSITY_VERBOSE);
+            $deployDefinition = $this->deployFactory->createDeploy($definitionClass);
             $event = new PreDispatchDeploymentEvent($deployDefinition);
             $this->eventDispatcher->dispatch(PreDispatchDeploymentEvent::class, $event);
 
             try {
                 if (($exitCode = $this->runDeploymentDefinition($deployDefinition, $output)) !== 0) {
-                    throw new FailedException(sprintf('Failed to execute definition %s', $className));
+                    throw new FailedException(sprintf('Failed to execute definition %s', $definitionClass));
                 }
-                die("XYZ");
-                $output->writeln(sprintf("Finished executing definition %s", $className), OutputInterface::VERBOSITY_DEBUG);
-                $this->locator->Events()->getFacade()->dispatchEvent(PostDispatchDeploymentEvent::class, new PostDispatchDeploymentEvent($deployment, true));
+
+                $output->writeln(sprintf('Finished executing definition %s', $definitionClass), OutputInterface::VERBOSITY_DEBUG);
             }
             catch(\Exception $e){
                 $output->writeln(sprintf('ERROR (%s): %s', get_class($e), $e->getMessage()));
@@ -153,9 +154,7 @@ class DeployRunCommand extends Command
             }
         }
 
-        die('DEBUG Ende');
-
-        $this->locator->Events()->getFacade()->dispatchEvent(PostRunDeploy::class, new PostRunDeploy($success));
+        $this->eventDispatcher->dispatch(PostRunDeploy::class, new PostRunDeploy($success));
 
         exit($exitCode);
     }
@@ -163,8 +162,8 @@ class DeployRunCommand extends Command
     /**
      * @param DeployDefinitionInterface $deployDefinition
      * @param OutputInterface $output
-     * @throws FailedException
      * @return int
+     * @throws \Deployee\Plugins\Deploy\Exception\DispatcherException
      */
     private function runDeploymentDefinition(DeployDefinitionInterface $deployDefinition, OutputInterface $output): int
     {
@@ -221,8 +220,8 @@ class DeployRunCommand extends Command
         if($result->getOutput()) {
             $output->writeln($result->getOutput(), OutputInterface::VERBOSITY_VERBOSE);
         }
-die('DISPATCHED');
-        $this->locator->Events()->getFacade()->dispatchEvent(PostDispatchTaskEvent::class, new PostDispatchTaskEvent($taskDefinition, $result));
+
+        $this->eventDispatcher->dispatch(PostDispatchTaskEvent::class, new PostDispatchTaskEvent($taskDefinition, $result));
 
         return $result;
     }

@@ -32,11 +32,11 @@ class FileTaskDefinitionDispatcher implements TaskDefinitionDispatcherInterface
             return $this->removeFile($definition->get('path'));
         }
 
-        if($definition->get('symlink') !== ''){
+        if($definition->get('symlink') !== null){
             return $this->createSymlink($definition->get('symlink'), $definition->get('path'));
         }
 
-        if($definition->get('copy') !== '') {
+        if($definition->get('copy') !== null) {
             return $this->copyFile($definition->get('copy'), $definition->get('path'));
         }
 

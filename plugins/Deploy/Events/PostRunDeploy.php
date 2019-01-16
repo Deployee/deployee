@@ -1,10 +1,10 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Events;
+namespace Deployee\Plugins\Deploy\Events;
 
-use Deployee\Events\AbstractEvent;
+use Symfony\Component\EventDispatcher\Event;
 
-class PostRunDeploy extends AbstractEvent
+class PostRunDeploy extends Event
 {
     /**
      * @var bool
@@ -15,7 +15,7 @@ class PostRunDeploy extends AbstractEvent
      * PostRunDeploy constructor.
      * @param bool $success
      */
-    public function __construct($success)
+    public function __construct(bool $success)
     {
         $this->success = $success;
     }
@@ -23,7 +23,7 @@ class PostRunDeploy extends AbstractEvent
     /**
      * @return bool
      */
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return $this->success;
     }

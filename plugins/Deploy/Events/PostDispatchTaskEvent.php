@@ -1,13 +1,12 @@
 <?php
 
-namespace Deployee\Plugins\RunDeploy\Events;
+namespace Deployee\Plugins\Deploy\Events;
 
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Events\AbstractEvent;
-use Deployee\Plugins\RunDeploy\Dispatcher\DispatchResultInterface;
-
-class PostDispatchTaskEvent extends AbstractEvent
+class PostDispatchTaskEvent extends Event
 {
     /**
      * @var TaskDefinitionInterface
@@ -33,7 +32,7 @@ class PostDispatchTaskEvent extends AbstractEvent
     /**
      * @return TaskDefinitionInterface
      */
-    public function getTask()
+    public function getTask(): TaskDefinitionInterface
     {
         return $this->task;
     }
@@ -41,7 +40,7 @@ class PostDispatchTaskEvent extends AbstractEvent
     /**
      * @return DispatchResultInterface
      */
-    public function getResult()
+    public function getResult(): DispatchResultInterface
     {
         return $this->result;
     }
