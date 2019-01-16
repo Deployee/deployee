@@ -40,8 +40,8 @@ class DeployDefinition_1499068619_testDirectoryTasks extends \Deployee\Plugins\D
             ->file(__DIR__ . '/.gittest')
             ->remove();
 
-        //$this
-        //    ->shell("php")
-        //    ->arguments("-v");
+        $this
+            ->shell("php")
+            ->arguments("-v");
     }
 }
