@@ -23,7 +23,9 @@
     "deployee/application": "dev-master",
     "deployee/config": "dev-master",
     "symfony/finder": "^3.4",
-    "deployee/dependency": "dev-master"
+    "deployee/dependency": "dev-master",
+    "deployee/environment": "^1.0",
+    "deployee/plugin-deploy": "dev-master"
   },
   "autoload": {
     "psr-4": {

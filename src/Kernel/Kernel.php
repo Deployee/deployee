@@ -11,6 +11,8 @@ use Deployee\Components\Config\ConfigLocator;
 use Deployee\Components\Container\Container;
 use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Dependency\ContainerResolver;
+use Deployee\Components\Environment\Environment;
+use Deployee\Components\Environment\EnvironmentInterface;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -25,12 +27,18 @@ class Kernel implements KernelInterface
     private $container;
 
     /**
-     * @param string $env
+     * @var string
+     */
+    private $envName;
+
+    /**
+     * @param string $envName
      * @throws \Deployee\Components\Container\ContainerException
      */
-    public function __construct(string $env = KernelConstraints::ENV_PROD)
+    public function __construct(string $envName = KernelConstraints::ENV_PROD)
     {
-        $this->container = new Container([KernelConstraints::ENV => $env]);
+        $this->envName = $envName;
+        $this->container = new Container();
     }
 
     /**
@@ -48,7 +56,12 @@ class Kernel implements KernelInterface
             return new ArgvInput($args);
         });
 
+        $envName = $this->envName;
         $configFilepath = $this->getConfigFilepath();
+        $this->container->set(EnvironmentInterface::class, function() use($envName, $configFilepath){
+            return new Environment($envName, dirname($configFilepath));
+        });
+
         $this->container->set(KernelConstraints::WORKDIR, dirname($configFilepath));
         $this->container->set(ConfigInterface::class, function() use($configFilepath){
             return (new ConfigLoader())->load($configFilepath);
