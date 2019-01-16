@@ -12,22 +12,18 @@
   "bin": ["bin/deployee"],
   "require": {
     "php": ">=7.0",
-    "symfony/event-dispatcher": "^3.4",
-    "symfony/console": "^3.4",
-    "pimple/pimple": "^3.2",
     "phizzl/php-mysql-command-builder": "^0.2",
     "phpdocumentor/reflection-docblock": "^3.2",
     "symfony/dotenv": "^3.4",
-    "deployee/container": "dev-master",
-    "deployee/plugins": "dev-master",
-    "deployee/application": "dev-master",
-    "deployee/config": "dev-master",
-    "symfony/finder": "^3.4",
-    "deployee/dependency": "dev-master",
+    "deployee/container": "^1.0",
+    "deployee/plugins": "^1.0",
+    "deployee/application": "^1.0",
+    "deployee/config": "^1.0",
+    "deployee/dependency": "^1.0",
     "deployee/environment": "^1.0",
-    "deployee/plugin-deploy": "dev-master",
-    "deployee/plugin-install": "dev-master",
-    "deployee/plugin-shelltasks": "dev-master"
+    "deployee/plugin-deploy": "^1.0",
+    "deployee/plugin-install": "^1.0",
+    "deployee/plugin-shelltasks": "^1.0"
   },
   "autoload": {
     "psr-4": {
