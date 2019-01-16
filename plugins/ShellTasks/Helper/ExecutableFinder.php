@@ -31,7 +31,7 @@ class ExecutableFinder
         if(isset($this->aliases[$name])){
             $return = $this->aliases[$name];
         }
-        elseif(trim($name) !== ""
+        elseif(trim($name) !== ''
             && ($path = $this->which($name))){
             $return = $path;
         }
@@ -60,10 +60,11 @@ class ExecutableFinder
         $isOsWin = stripos(PHP_OS, 'WIN') === 0;
 
         $which = $isOsWin ? 'where' : 'which';
-
-        $cmd = new ShellCommand($which, $name);
+        $cmd = new ShellCommand(sprintf('%s %s', $which, escapeshellarg($name)), null);
         $result = $cmd->run();
 
-        return $result->getExitCode() > 0 ? '' : trim($result->getOutput());
+        return $result->getExitCode() > 0
+            ? ''
+            : trim(current(explode(PHP_EOL, $result->getOutput())));
     }
 }
