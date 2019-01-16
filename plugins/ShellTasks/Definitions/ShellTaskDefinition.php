@@ -2,9 +2,9 @@
 
 namespace Deployee\Plugins\ShellTasks\Definitions;
 
-
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
 class ShellTaskDefinition implements TaskDefinitionInterface
 {
@@ -28,7 +28,7 @@ class ShellTaskDefinition implements TaskDefinitionInterface
      * @param string $arguments
      * @return $this
      */
-    public function arguments($arguments)
+    public function arguments($arguments): self
     {
         $this->parameter->set('arguments', $arguments);
         return $this;
@@ -37,7 +37,7 @@ class ShellTaskDefinition implements TaskDefinitionInterface
     /**
      * @return ParameterCollection
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return $this->parameter;
     }

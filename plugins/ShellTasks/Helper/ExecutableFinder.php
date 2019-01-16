@@ -11,29 +11,28 @@ class ExecutableFinder
     /**
      * @var array
      */
-    private $aliase;
+    private $aliases;
 
     /**
-     * ExecutableFinderService constructor.
-     * @param array $alias
+     * @param array $aliases
      */
-    public function __construct( array $aliase = [])
+    public function __construct(array $aliases = [])
     {
-        $this->aliase = $aliase;
+        $this->aliases = $aliases;
     }
 
     /**
      * @param string $name
      * @return string
      */
-    public function find($name)
+    public function find(string $name): string
     {
         $return = $name;
-        if(isset($this->aliase[$name])){
-            $return = $this->aliase[$name];
+        if(isset($this->aliases[$name])){
+            $return = $this->aliases[$name];
         }
-        elseif(trim($name) != ""
-            && $path = $this->which($name)){
+        elseif(trim($name) !== ""
+            && ($path = $this->which($name))){
             $return = $path;
         }
 
@@ -49,18 +48,18 @@ class ExecutableFinder
      */
     public function addAlias($alias, $resolved)
     {
-        $this->aliase[$alias] = $resolved;
+        $this->aliases[$alias] = $resolved;
     }
 
     /**
      * @param string $name
      * @return string
      */
-    private function which($name)
+    private function which(string $name): string
     {
-        $isOsWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        $isOsWin = stripos(PHP_OS, 'WIN') === 0;
 
-        $which = $isOsWin ? "where" : "which";
+        $which = $isOsWin ? 'where' : 'which';
 
         $cmd = new ShellCommand($which, $name);
         $result = $cmd->run();
