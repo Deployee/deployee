@@ -23,7 +23,8 @@
     "deployee/environment": "^1.0",
     "deployee/plugin-deploy": "^1.0",
     "deployee/plugin-install": "^1.0",
-    "deployee/plugin-shelltasks": "^1.0"
+    "deployee/plugin-shelltasks": "^1.0",
+    "deployee/plugin-filesystemtasks": "^1.0"
   },
   "autoload": {
     "psr-4": {
