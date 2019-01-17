@@ -12,6 +12,7 @@
   "bin": ["bin/deployee"],
   "require": {
     "php": ">=7.0",
+    "ext-pdo": "*",
     "phizzl/php-mysql-command-builder": "^0.2",
     "symfony/dotenv": "^3.4",
     "deployee/container": "^1.0",
