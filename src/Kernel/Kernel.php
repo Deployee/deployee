@@ -47,15 +47,6 @@ class Kernel implements KernelInterface
      */
     public function boot(): self
     {
-        $this->container->set(InputInterface::class, function(){
-            $args = array_filter($_SERVER['argv'], function($val){
-                return strpos($val, '-e=') !== 0
-                    && strpos($val, '--env=') !== 0;
-            });
-
-            return new ArgvInput($args);
-        });
-
         $envName = $this->envName;
         $configFilepath = $this->getConfigFilepath();
         $this->container->set(EnvironmentInterface::class, function() use($envName, $configFilepath){
@@ -73,6 +64,25 @@ class Kernel implements KernelInterface
         $this->container->set(CommandCollection::class, new CommandCollection());
         $this->container->set(Application::class, new Application());
         $this->container->set(EventDispatcher::class, new EventDispatcher());
+
+        $this->container->set(\PDO::class, function(ContainerInterface $container){
+            /* @var ConfigInterface $config */
+            $config = $container->get(ConfigInterface::class);
+            return new \PDO(
+                sprintf(
+                    '%s:host=%s;port=%d;dbname=%s',
+                    $config->get('db.type', 'mysql'),
+                    $config->get('db.host', 'localhost'),
+                    $config->get('db.port', 3306),
+                    $config->get('db.name')
+                ),
+                $config->get('db.user', get_current_user()),
+                $config->get('db.password', ''),
+                [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                ]
+            );
+        });
 
         $pluginLoader = new PluginLoader($this->container);
         $this->container->set(KernelConstraints::PLUGIN_COLLECTION, $pluginLoader->loadPlugins());

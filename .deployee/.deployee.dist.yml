@@ -1,9 +1,7 @@
 deploy_definition_path: ./definitions
-mysql.host: localhost
-mysql.port: 3306
-mysql.username: root
-mysql.password: ~
-mysql.database: ~
-mysql.bin: ~
-oxid.path: /var/www/oxid
-shopware.path: /var/www/shopware
+db.type: ~
+db.host: localhost
+db.port: 3306
+db.user: root
+db.password: ~
+db.database: ~
