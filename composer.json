@@ -13,7 +13,6 @@
   "require": {
     "php": ">=7.0",
     "phizzl/php-mysql-command-builder": "^0.2",
-    "phpdocumentor/reflection-docblock": "^3.2",
     "symfony/dotenv": "^3.4",
     "deployee/container": "^1.0",
     "deployee/plugins": "^1.0",
@@ -24,7 +23,9 @@
     "deployee/plugin-deploy": "^1.0",
     "deployee/plugin-install": "^1.0",
     "deployee/plugin-shelltasks": "^1.0",
-    "deployee/plugin-filesystemtasks": "^1.0"
+    "deployee/plugin-filesystemtasks": "^1.0",
+    "deployee/docblock": "^1.0",
+    "deployee/plugin-deployenv": "^1.0"
   },
   "autoload": {
     "psr-4": {
