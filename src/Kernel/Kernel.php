@@ -13,6 +13,7 @@ use Deployee\Components\Container\ContainerInterface;
 use Deployee\Components\Dependency\ContainerResolver;
 use Deployee\Components\Environment\Environment;
 use Deployee\Components\Environment\EnvironmentInterface;
+use Deployee\Components\Persistence\LazyPDO;
 use Deployee\Components\Plugins\PluginLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -47,6 +48,15 @@ class Kernel implements KernelInterface
      */
     public function boot(): self
     {
+        $this->container->set(InputInterface::class, function(){
+            $args = array_filter($_SERVER['argv'], function($val){
+                return strpos($val, '-e=') !== 0
+                    && strpos($val, '--env=') !== 0;
+            });
+
+            return new ArgvInput($args);
+        });
+
         $envName = $this->envName;
         $configFilepath = $this->getConfigFilepath();
         $this->container->set(EnvironmentInterface::class, function() use($envName, $configFilepath){
@@ -68,7 +78,7 @@ class Kernel implements KernelInterface
         $this->container->set(\PDO::class, function(ContainerInterface $container){
             /* @var ConfigInterface $config */
             $config = $container->get(ConfigInterface::class);
-            return new \PDO(
+            return new LazyPDO(
                 sprintf(
                     '%s:host=%s;port=%d;dbname=%s',
                     $config->get('db.type', 'mysql'),

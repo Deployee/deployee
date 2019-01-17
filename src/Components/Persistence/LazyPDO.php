@@ -6,7 +6,7 @@ namespace Deployee\Components\Persistence;
 /**
  * @mixin \PDO
  */
-class PDO
+class LazyPDO
 {
     /**
      * @var string
