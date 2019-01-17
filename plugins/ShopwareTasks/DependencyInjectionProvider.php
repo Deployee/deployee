@@ -6,7 +6,7 @@ namespace Deployee\Plugins\ShopwareTasks;
 use Deployee\Dependency\DependencyInjectionProviderInterface;
 use Deployee\Deployment\Helper\TaskCreationHelper;
 use Deployee\Kernel\Locator;
-use Deployee\Plugins\MySqlTasks\Helper\Credentials;
+use Deployee\Plugins\DbTasks\Helper\Credentials;
 use Deployee\Plugins\RunDeploy\Dispatcher\DispatcherCollection;
 use Deployee\Plugins\ShopwareTasks\Shop\ShopConfig;
 
@@ -66,7 +66,7 @@ class DependencyInjectionProvider implements DependencyInjectionProviderInterfac
      */
     private function extendDbConfigDependency(Locator $locator)
     {
-        $locator->Dependency()->getFacade()->extendDependency(\Deployee\Plugins\MySqlTasks\Module::CREDENTIALS_DEPENDENCY, function(Credentials $credentials) use($locator){
+        $locator->Dependency()->getFacade()->extendDependency(\Deployee\Plugins\DbTasks\Module::CREDENTIALS_DEPENDENCY, function(Credentials $credentials) use($locator){
             /* @var ShopConfig $shopConfig */
             $shopConfig = $locator->Dependency()->getFacade()->getDependency(Module::SHOP_CONFIG_DEPENDENCY);
             $dbConfig = $shopConfig->get('db');
