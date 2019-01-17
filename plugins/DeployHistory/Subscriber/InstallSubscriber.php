@@ -5,7 +5,6 @@ namespace Deployee\Plugins\DeployHistory\Subscriber;
 
 use Deployee\Components\Persistence\LazyPDO;
 use Deployee\Plugins\Install\Events\RunInstallCommandEvent;
-use Deployee\Plugins\MySqlTasks\Definitions\MySqlFileDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class InstallSubscriber implements EventSubscriberInterface
