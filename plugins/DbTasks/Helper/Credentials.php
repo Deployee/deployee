@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Deployee\Plugins\MySqlTasks\Helper;
+namespace Deployee\Plugins\DbTasks\Helper;
 
 
 class Credentials

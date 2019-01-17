@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Deployee\Plugins\MySqlTasks\Dispatcher;
+namespace Deployee\Plugins\DbTasks\Dispatcher;
 
 use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Plugins\MySqlTasks\Definitions\MySqlQueryDefinition;
-use Deployee\Plugins\MySqlTasks\Helper\Credentials;
-use Deployee\Plugins\MySqlTasks\Module;
+use Deployee\Plugins\DbTasks\Definitions\MySqlQueryDefinition;
+use Deployee\Plugins\DbTasks\Helper\Credentials;
+use Deployee\Plugins\DbTasks\Module;
 use Deployee\Plugins\RunDeploy\Dispatcher\AbstractTaskDefinitionDispatcher;
 use Deployee\Plugins\ShellTasks\Definitions\ShellTaskDefinition;
 use Phizzl\MySqlCommandBuilder\MySqlCommandBuilder;

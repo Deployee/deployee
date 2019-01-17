@@ -1,16 +1,16 @@
 <?php
 
-namespace Deployee\Plugins\MySqlTasks\Definitions;
+namespace Deployee\Plugins\DbTasks\Definitions;
 
 use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
 use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
 
-class MySqlFileDefinition implements TaskDefinitionInterface
+class MySqlQueryDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string
      */
-    private $source;
+    private $query;
 
     /**
      * @var bool
@@ -19,11 +19,11 @@ class MySqlFileDefinition implements TaskDefinitionInterface
 
     /**
      * MySqlDumpTask constructor.
-     * @param $target
+     * @param string $query
      */
-    public function __construct($source)
+    public function __construct($query)
     {
-        $this->source = $source;
+        $this->query = $query;
         $this->force = false;
     }
 
@@ -42,7 +42,7 @@ class MySqlFileDefinition implements TaskDefinitionInterface
     public function define()
     {
         return new ParameterCollection([
-            'source' => $this->source,
+            'query' => $this->query,
             'force' => $this->force
         ]);
     }

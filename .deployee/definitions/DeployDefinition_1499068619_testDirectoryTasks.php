@@ -4,7 +4,7 @@ use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionCollectionInterface;
 
 /**
  * @mixin ideHelperDeploymentDefinition
- * @runalways
+ * @env live
  */
 class DeployDefinition_1499068619_testDirectoryTasks extends \Deployee\Plugins\Deploy\Definitions\Deploy\AbstractDeployDefinition
 {
@@ -43,5 +43,6 @@ class DeployDefinition_1499068619_testDirectoryTasks extends \Deployee\Plugins\D
         $this
             ->shell("php")
             ->arguments("-v");
+
     }
 }
