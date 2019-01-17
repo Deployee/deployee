@@ -75,7 +75,7 @@ class Kernel implements KernelInterface
         $this->container->set(Application::class, new Application());
         $this->container->set(EventDispatcher::class, new EventDispatcher());
 
-        $this->container->set(\PDO::class, function(ContainerInterface $container){
+        $this->container->set(LazyPDO::class, function(ContainerInterface $container){
             /* @var ConfigInterface $config */
             $config = $container->get(ConfigInterface::class);
             return new LazyPDO(
@@ -84,7 +84,7 @@ class Kernel implements KernelInterface
                     $config->get('db.type', 'mysql'),
                     $config->get('db.host', 'localhost'),
                     $config->get('db.port', 3306),
-                    $config->get('db.name')
+                    $config->get('db.database')
                 ),
                 $config->get('db.user', get_current_user()),
                 $config->get('db.password', ''),
