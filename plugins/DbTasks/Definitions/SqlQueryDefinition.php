@@ -2,10 +2,11 @@
 
 namespace Deployee\Plugins\DbTasks\Definitions;
 
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
-class MySqlQueryDefinition implements TaskDefinitionInterface
+class SqlQueryDefinition implements TaskDefinitionInterface
 {
     /**
      * @var string
@@ -21,7 +22,7 @@ class MySqlQueryDefinition implements TaskDefinitionInterface
      * MySqlDumpTask constructor.
      * @param string $query
      */
-    public function __construct($query)
+    public function __construct(string $query)
     {
         $this->query = $query;
         $this->force = false;
@@ -30,16 +31,16 @@ class MySqlQueryDefinition implements TaskDefinitionInterface
     /**
      * @return $this
      */
-    public function force()
+    public function force(): self
     {
         $this->force = true;
         return $this;
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return new ParameterCollection([
             'query' => $this->query,
