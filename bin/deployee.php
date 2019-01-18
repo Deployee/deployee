@@ -1,9 +1,6 @@
 <?php
 
-use Deployee\Components\Container\Container;
 use Deployee\Kernel\Kernel;
-use Deployee\Kernel\Locator;
-use Deployee\ClassLoader\Module;
 use Deployee\Kernel\KernelConstraints;
 use Symfony\Component\Console\Input\ArgvInput;
 
