@@ -14,7 +14,7 @@ class ShopConfig
      * ShopConfig constructor.
      * @param string $configFilePath
      */
-    public function __construct($configFilePath)
+    public function __construct(string $configFilePath)
     {
         if(!is_file($configFilePath)){
             throw new \InvalidArgumentException("Path to shopware config was not found or is invalid");
@@ -27,8 +27,8 @@ class ShopConfig
      * @param string $id
      * @return mixed|null
      */
-    public function get($id)
+    public function get(string $id)
     {
-        return isset($this->config[$id]) ? $this->config[$id] : null;
+        return $this->config[$id] ?? null;
     }
 }
