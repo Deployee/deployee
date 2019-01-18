@@ -3,8 +3,9 @@
 namespace Deployee\Plugins\ShopwareTasks\Definitions;
 
 
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
 class GenerateThemeCacheDefinition implements TaskDefinitionInterface
 {
@@ -14,8 +15,7 @@ class GenerateThemeCacheDefinition implements TaskDefinitionInterface
     private $shopId;
 
     /**
-     * GenerateThemeCacheDefinition constructor.
-     * @param int $shopId
+     * @param array $shopId
      */
     public function __construct(array $shopId = [])
     {
@@ -23,9 +23,9 @@ class GenerateThemeCacheDefinition implements TaskDefinitionInterface
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return new ParameterCollection(get_object_vars($this));
     }

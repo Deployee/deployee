@@ -24,7 +24,7 @@ class ShopwareCommandDefinition implements TaskDefinitionInterface
      * @param string $command
      * @param string $arguments
      */
-    public function __construct($command, $arguments = '')
+    public function __construct(string $command, string $arguments = '')
     {
         $this->command = $command;
         $this->arguments = $arguments;

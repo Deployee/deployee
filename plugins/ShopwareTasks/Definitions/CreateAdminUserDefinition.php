@@ -41,7 +41,7 @@ class CreateAdminUserDefinition implements TaskDefinitionInterface
      * @param string $name
      * @param string $locale
      */
-    public function __construct($email, $username, $password, $name, $locale = "en_GB")
+    public function __construct(string $email, string $username, string $password, string $name, string $locale = "en_GB")
     {
         $this->email = $email;
         $this->username = $username;

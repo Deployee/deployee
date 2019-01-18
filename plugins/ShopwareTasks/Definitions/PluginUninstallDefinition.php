@@ -3,8 +3,9 @@
 namespace Deployee\Plugins\ShopwareTasks\Definitions;
 
 
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
 class PluginUninstallDefinition implements TaskDefinitionInterface
 {
@@ -23,7 +24,7 @@ class PluginUninstallDefinition implements TaskDefinitionInterface
      * @param string $plugin
      * @param bool $secure
      */
-    public function __construct($plugin, $secure = false)
+    public function __construct(string $plugin, bool $secure = false)
     {
         $this->plugin = $plugin;
         $this->secure = $secure;
@@ -34,16 +35,16 @@ class PluginUninstallDefinition implements TaskDefinitionInterface
      * @param bool $secure
      * @return $this
      */
-    public function secure($secure = true)
+    public function secure(bool $secure = true): self
     {
         $this->secure = $secure;
         return $this;
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return new ParameterCollection(get_object_vars($this));
     }

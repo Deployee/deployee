@@ -2,9 +2,9 @@
 
 namespace Deployee\Plugins\ShopwareTasks\Definitions;
 
-
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
 class PluginReinstallDefinition implements TaskDefinitionInterface
 {
@@ -23,7 +23,7 @@ class PluginReinstallDefinition implements TaskDefinitionInterface
      * @param string $plugin
      * @param bool $removedata
      */
-    public function __construct($plugin, $removedata = false)
+    public function __construct(string $plugin, bool $removedata = false)
     {
         $this->plugin = $plugin;
         $this->removedata = $removedata;
@@ -31,19 +31,19 @@ class PluginReinstallDefinition implements TaskDefinitionInterface
 
 
     /**
-     * @param bool $activate
+     * @param bool $removedata
      * @return $this
      */
-    public function removedata($removedata = true)
+    public function removedata(bool $removedata = true): self
     {
         $this->removedata = $removedata;
         return $this;
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return new ParameterCollection(get_object_vars($this));
     }

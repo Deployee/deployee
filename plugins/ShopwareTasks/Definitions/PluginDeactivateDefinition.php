@@ -3,8 +3,9 @@
 namespace Deployee\Plugins\ShopwareTasks\Definitions;
 
 
-use Deployee\Deployment\Definitions\Parameter\ParameterCollection;
-use Deployee\Deployment\Definitions\Tasks\AbstractTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollection;
+use Deployee\Plugins\Deploy\Definitions\Parameter\ParameterCollectionInterface;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
 
 class PluginDeactivateDefinition implements TaskDefinitionInterface
 {
@@ -17,15 +18,15 @@ class PluginDeactivateDefinition implements TaskDefinitionInterface
      * PluginInstallDefinition constructor.
      * @param string $plugin
      */
-    public function __construct($plugin)
+    public function __construct(string $plugin)
     {
         $this->plugin = $plugin;
     }
 
     /**
-     * @return ParameterCollection
+     * @return ParameterCollectionInterface
      */
-    public function define()
+    public function define(): ParameterCollectionInterface
     {
         return new ParameterCollection(get_object_vars($this));
     }
