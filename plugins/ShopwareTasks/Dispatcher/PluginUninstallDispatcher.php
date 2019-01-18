@@ -2,10 +2,11 @@
 
 namespace Deployee\Plugins\ShopwareTasks\Dispatcher;
 
-use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Plugins\RunDeploy\Dispatcher\AbstractTaskDefinitionDispatcher;
-use Deployee\Plugins\ShellTasks\Definitions\ShellTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Deployee\Plugins\Deploy\Dispatcher\AbstractTaskDefinitionDispatcher;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
 use Deployee\Plugins\ShopwareTasks\Definitions\PluginUninstallDefinition;
+use Deployee\Plugins\ShopwareTasks\Definitions\ShopwareCommandDefinition;
 
 class PluginUninstallDispatcher extends AbstractTaskDefinitionDispatcher
 {
@@ -13,30 +14,28 @@ class PluginUninstallDispatcher extends AbstractTaskDefinitionDispatcher
      * @param TaskDefinitionInterface $taskDefinition
      * @return bool
      */
-    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition)
+    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition): bool
     {
         return $taskDefinition instanceof PluginUninstallDefinition;
     }
 
     /**
      * @param TaskDefinitionInterface $taskDefinition
-     * @return \Deployee\Plugins\RunDeploy\Dispatcher\DispatchResultInterface
+     * @return DispatchResultInterface
+     * @throws \Deployee\Plugins\Deploy\Exception\DispatcherException
      */
-    public function dispatch(TaskDefinitionInterface $taskDefinition)
+    public function dispatch(TaskDefinitionInterface $taskDefinition): DispatchResultInterface
     {
         $parameter = $taskDefinition->define();
-        $shopPath = $this->locator->Config()->getFacade()->get('shopware.path');
-
-        $shellTask = new ShellTaskDefinition("{$shopPath}/bin/console");
-        $shellTask->arguments(
-            sprintf(
-                'sw:plugin:uninstall -n %s %s',
-                $parameter->get('plugin'),
-                $parameter->get('secure') === true ? "--secure" : ""
+        return $this->delegate(
+            new ShopwareCommandDefinition(
+                'sw:plugin:uninstall',
+                sprintf(
+                    '-n %s %s',
+                    $parameter->get('secure') === true ? '--secure' : '',
+                    $parameter->get('plugin')
+                )
             )
         );
-
-        return $this->delegate($shellTask);
     }
-
 }

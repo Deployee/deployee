@@ -2,11 +2,11 @@
 
 namespace Deployee\Plugins\ShopwareTasks\Dispatcher;
 
-
-use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Plugins\RunDeploy\Dispatcher\AbstractTaskDefinitionDispatcher;
-use Deployee\Plugins\ShellTasks\Definitions\ShellTaskDefinition;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Deployee\Plugins\Deploy\Dispatcher\AbstractTaskDefinitionDispatcher;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
 use Deployee\Plugins\ShopwareTasks\Definitions\GenerateAttributesDefinition;
+use Deployee\Plugins\ShopwareTasks\Definitions\ShopwareCommandDefinition;
 
 class GenerateAttributesDispatcher extends AbstractTaskDefinitionDispatcher
 {
@@ -14,23 +14,19 @@ class GenerateAttributesDispatcher extends AbstractTaskDefinitionDispatcher
      * @param TaskDefinitionInterface $taskDefinition
      * @return bool
      */
-    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition)
+    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition): bool
     {
         return $taskDefinition instanceof GenerateAttributesDefinition;
     }
 
     /**
      * @param TaskDefinitionInterface $taskDefinition
-     * @return \Deployee\Plugins\RunDeploy\Dispatcher\DispatchResultInterface
+     * @return DispatchResultInterface
+     * @throws \Deployee\Plugins\Deploy\Exception\DispatcherException
      */
-    public function dispatch(TaskDefinitionInterface $taskDefinition)
+    public function dispatch(TaskDefinitionInterface $taskDefinition): DispatchResultInterface
     {
-        $shopPath = $this->locator->Config()->getFacade()->get('shopware.path');
-
-        $shellTask = new ShellTaskDefinition("{$shopPath}/bin/console");
-        $shellTask->arguments('sw:generate:attributes -n');
-
-        return $this->delegate($shellTask);
+        return $this->delegate(new ShopwareCommandDefinition('sw:generate:attributes', '-n'));
     }
 
 }
