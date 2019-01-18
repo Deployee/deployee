@@ -2,11 +2,12 @@
 
 namespace Deployee\Plugins\ShopwareTasks\Dispatcher;
 
-
-use Deployee\Deployment\Definitions\Tasks\TaskDefinitionInterface;
-use Deployee\Plugins\RunDeploy\Dispatcher\AbstractTaskDefinitionDispatcher;
+use Deployee\Plugins\Deploy\Definitions\Tasks\TaskDefinitionInterface;
+use Deployee\Plugins\Deploy\Dispatcher\AbstractTaskDefinitionDispatcher;
+use Deployee\Plugins\Deploy\Dispatcher\DispatchResultInterface;
 use Deployee\Plugins\ShellTasks\Definitions\ShellTaskDefinition;
 use Deployee\Plugins\ShopwareTasks\Definitions\CreateAdminUserDefinition;
+use Deployee\Plugins\ShopwareTasks\Definitions\ShopwareCommandDefinition;
 
 class CreateAdminUserDispatcher extends AbstractTaskDefinitionDispatcher
 {
@@ -14,24 +15,19 @@ class CreateAdminUserDispatcher extends AbstractTaskDefinitionDispatcher
      * @param TaskDefinitionInterface $taskDefinition
      * @return bool
      */
-    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition)
+    public function canDispatchTaskDefinition(TaskDefinitionInterface $taskDefinition): bool
     {
         return $taskDefinition instanceof CreateAdminUserDefinition;
     }
 
-    /**
-     * @param TaskDefinitionInterface $taskDefinition
-     * @return \Deployee\Plugins\RunDeploy\Dispatcher\DispatchResultInterface
-     */
-    public function dispatch(TaskDefinitionInterface $taskDefinition)
+
+    public function dispatch(TaskDefinitionInterface $taskDefinition): DispatchResultInterface
     {
         $parameter = $taskDefinition->define();
-        $shopPath = $this->locator->Config()->getFacade()->get('shopware.path');
-
-        $shellTask = new ShellTaskDefinition("{$shopPath}/bin/console");
-        $shellTask->arguments(
+        $swCommand = new ShopwareCommandDefinition(
+            'sw:admin:create',
             sprintf(
-                "sw:admin:create --username=%s --password=%s --email=%s --name=%s --locale=%s -n",
+                "--username=%s --password=%s --email=%s --name=%s --locale=%s -n",
                 escapeshellarg($parameter->get('username')),
                 escapeshellarg($parameter->get('password')),
                 escapeshellarg($parameter->get('email')),
@@ -40,7 +36,7 @@ class CreateAdminUserDispatcher extends AbstractTaskDefinitionDispatcher
             )
         );
 
-        return $this->delegate($shellTask);
+        return $this->delegate($swCommand);
     }
 
 }

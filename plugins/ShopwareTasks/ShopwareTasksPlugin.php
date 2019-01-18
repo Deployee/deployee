@@ -12,7 +12,9 @@ use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Plugins\Deploy\Dispatcher\DispatcherCollection;
 use Deployee\Plugins\Deploy\Helper\TaskCreationHelper;
 use Deployee\Plugins\ShellTasks\Helper\ExecutableFinder;
+use Deployee\Plugins\ShopwareTasks\Definitions\CreateAdminUserDefinition;
 use Deployee\Plugins\ShopwareTasks\Definitions\ShopwareCommandDefinition;
+use Deployee\Plugins\ShopwareTasks\Dispatcher\CreateAdminUserDispatcher;
 use Deployee\Plugins\ShopwareTasks\Dispatcher\ShopwareCommandDispatcher;
 use Deployee\Plugins\ShopwareTasks\Shop\ShopConfig;
 
@@ -71,6 +73,7 @@ class ShopwareTasksPlugin implements PluginInterface
         /* @var TaskCreationHelper $helper */
         $helper = $container->get(TaskCreationHelper::class);
         $helper->addAlias('swCommand', ShopwareCommandDefinition::class);
+        $helper->addAlias('swCreateAdmin', CreateAdminUserDefinition::class);
 
         /* @var DispatcherCollection $dispatcherCollection */
         $dispatcherCollection = $container->get(DispatcherCollection::class);
@@ -78,7 +81,8 @@ class ShopwareTasksPlugin implements PluginInterface
         $resolver = $container->get(ContainerResolver::class);
 
         $dispatcherArray = [
-            $resolver->createInstance(ShopwareCommandDispatcher::class)
+            $resolver->createInstance(ShopwareCommandDispatcher::class),
+            $resolver->createInstance(CreateAdminUserDispatcher::class)
         ];
 
         $dispatcherCollection->addDispatcherArray($dispatcherArray);
