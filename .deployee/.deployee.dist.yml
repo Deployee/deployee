@@ -5,3 +5,6 @@ db.port: ~
 db.user: root
 db.password: ~
 db.database: test
+shopware.path: C:\xampp\xampp72\htdocs\shopware
+shell.aliases:
+  "mysql": C:\xampp\xampp72\mysql\bin\mysql.exe
