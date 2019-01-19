@@ -16,7 +16,7 @@
     "deployee/container": "^1.0",
     "deployee/plugins": "^1.0",
     "deployee/application": "^1.0",
-    "deployee/config": "^1.0",
+    "deployee/config": "^1.0.1",
     "deployee/dependency": "^1.0",
     "deployee/environment": "^1.0",
     "deployee/plugin-deploy": "^1.0",

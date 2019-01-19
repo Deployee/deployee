@@ -136,6 +136,6 @@ class Kernel implements KernelInterface
             dirname(__DIR__) . '/../.deployee',
             dirname(__DIR__) . '/../../../../.deployee',
             dirname(__DIR__) . '/../../../..',
-        ]);
+        ], $this->envName);
     }
 }
