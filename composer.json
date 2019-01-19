@@ -1,5 +1,5 @@
 {
-  "name": "phizzl/deployee",
+  "name": "deployee/deployee",
   "description": "Taskrunner for PHP",
   "minimum-stability": "stable",
   "license": "GPL-3.0",
@@ -31,8 +31,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Deployee\\": "src/",
-      "Deployee\\Plugins\\": "plugins/"
+      "Deployee\\": "src/"
     }
   },
   "autoload-dev": {
