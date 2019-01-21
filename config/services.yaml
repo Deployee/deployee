@@ -23,3 +23,6 @@ services:
     arguments: ['%db.type%:host=%db.host%;port=%db.port%;dbname=%db.database%', '%db.user%', '%db.password%']
 
   PDO: '@\PDO'
+
+  Symfony\Component\EventDispatcher\EventDispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
