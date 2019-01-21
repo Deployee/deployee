@@ -26,7 +26,7 @@ if($loaderFile === ''){
 require $loaderFile;
 
 $input = new ArgvInput();
-$env = $input->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?? KernelConstraints::ENV_PROD);
+$env = $input->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?: 'production');
 $kernel = new Kernel($env);
 
 return $kernel->boot()->run();
