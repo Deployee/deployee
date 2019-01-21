@@ -86,7 +86,12 @@ class Kernel
             $this->runPlugin($plugin);
         }
 
-        $commands = $this->container->findTaggedServiceIds('console.command');
+        $commandClasses = array_keys($this->container->findTaggedServiceIds('console.command'));
+        $commands = [];
+        foreach($commandClasses as $commandClasse){
+            $commands[] = $this->container->get($commandClasse);
+        }
+
         /* @var Application $app */
         $app = new Application(self::APP_NAME, self::APP_VERSION);
         $app->addCommands($commands);

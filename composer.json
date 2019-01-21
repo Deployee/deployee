@@ -20,7 +20,8 @@
     "symfony/config": "^3.4",
     "symfony/console": "^3.4",
     "symfony/finder": "^3.4",
-    "symfony/event-dispatcher": "^3.4"
+    "symfony/event-dispatcher": "^3.4",
+    "deployee/plugin-install": "v1.1.x-dev"
   },
   "autoload": {
     "psr-4": {
