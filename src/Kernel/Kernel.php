@@ -48,16 +48,23 @@ class Kernel
     public function boot(): self
     {
         $configFile = $this->getConfigFilepath();
+        $this->container->setProxyInstantiator(new RuntimeInstantiator());
         $this->container->setParameter('kernel.env', $this->envName);
         $this->container->setParameter('kernel.configfile', $configFile);
         $this->container->setParameter('kernel.workdir', dirname($configFile));
-        $this->container->setProxyInstantiator(new RuntimeInstantiator());
 
         $loader = new YamlFileLoader($this->container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
 
         $loader = new YamlFileLoader($this->container, new FileLocator(dirname($configFile)));
         $loader->load(basename($configFile));
+
+        $this->container->setParameter(
+            'deploy_definition_path',
+            $this->resolveDeployDefinitionPath(
+                $this->container->getParameter('deploy_definition_path')
+            )
+        );
 
         $pluginLoader = new PluginLoader($this->container);
         $this->container->set('kernel.services.plugins', $pluginLoader->loadPlugins());
@@ -85,6 +92,17 @@ class Kernel
         $app->addCommands($commands);
 
         return $app->run($input);
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function resolveDeployDefinitionPath(string $path): string
+    {
+        return strpos($path, '/') !== 0 && strpos($path, ':') !== 1
+            ? $this->container->getParameter('kernel.workdir') . DIRECTORY_SEPARATOR . $path
+            : $path;
     }
 
     /**
