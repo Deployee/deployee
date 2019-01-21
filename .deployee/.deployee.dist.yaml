@@ -1,0 +1,11 @@
+parameters:
+  deploy_definition_path: ./definitions
+  db.type: mysql
+  db.host: localhost
+  db.port: 3306
+  db.user: root
+  db.password: ~
+  db.database: test
+  shopware.path: ~
+  shell.aliases:
+    "myawesomebin": /path/to/bin

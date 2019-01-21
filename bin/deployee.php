@@ -1,7 +1,6 @@
 <?php
 
 use Deployee\Kernel\Kernel;
-use Deployee\Kernel\KernelConstraints;
 use Symfony\Component\Console\Input\ArgvInput;
 
 set_time_limit(0);
@@ -25,8 +24,12 @@ if($loaderFile === ''){
 
 require $loaderFile;
 
-$input = new ArgvInput();
-$env = $input->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?: 'production');
+$env = (new ArgvInput())->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?: 'production');
 $kernel = new Kernel($env);
 
-return $kernel->boot()->run();
+$args = array_filter($_SERVER['argv'], function ($arg){
+    return strpos($arg, '--env=') !== 0
+        && strpos($arg, '-e') !== 0;
+});
+
+return $kernel->boot()->run(new ArgvInput($args));

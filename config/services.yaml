@@ -1,0 +1,25 @@
+parameters:
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Deployee\:
+    resource: '../src/*'
+    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+
+  Deployee\Components\Environment\Environment:
+    class: Deployee\Components\Environment\Environment
+    arguments: ['%kernel.env%', '%kernel.workdir%']
+    public: false
+
+  Deployee\Components\Environment\EnvironmentInterface: '@Deployee\Components\Environment\Environment'
+
+  \PDO:
+    class: \PDO
+    lazy: true
+    arguments: ['%db.type%:host=%db.host%;port=%db.port%;dbname=%db.database%', '%db.user%', '%db.password%']
+
+  PDO: '@\PDO'

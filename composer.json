@@ -13,21 +13,13 @@
   "require": {
     "php": ">=7.0",
     "ext-pdo": "*",
-    "deployee/container": "^1.0",
-    "deployee/plugins": "^1.0",
-    "deployee/application": "^1.0",
-    "deployee/config": "^1.0.1",
-    "deployee/dependency": "^1.0",
+    "deployee/plugins": "v1.1.x-dev",
     "deployee/environment": "^1.0",
-    "deployee/plugin-deploy": "^1.0",
-    "deployee/plugin-install": "^1.0",
-    "deployee/plugin-shelltasks": "^1.0",
-    "deployee/plugin-filesystemtasks": "^1.0",
-    "deployee/docblock": "^1.0",
-    "deployee/plugin-deployenv": "^1.0",
-    "deployee/persistence": "^1.0",
-    "deployee/plugin-deployhistory": "^1.0",
-    "deployee/plugin-dbtasks": "^1.0"
+    "symfony/dependency-injection": "^3.4",
+    "symfony/proxy-manager-bridge": "^3.4",
+    "symfony/config": "^3.4",
+    "symfony/console": "^3.4",
+    "symfony/finder": "^3.4"
   },
   "autoload": {
     "psr-4": {
@@ -41,8 +33,6 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^6.5",
-    "roave/security-advisories": "dev-master",
-    "deployee/plugin-idesupport": "^1.0",
-    "deployee/plugin-generatedeploy": "^1.0"
+    "roave/security-advisories": "dev-master"
   }
 }

@@ -3,27 +3,26 @@
 
 namespace Deployee\Kernel;
 
-use Deployee\Components\Application\Application;
-use Deployee\Components\Application\CommandCollection;
-use Deployee\Components\Config\ConfigInterface;
-use Deployee\Components\Config\ConfigLoader;
-use Deployee\Components\Config\ConfigLocator;
-use Deployee\Components\Container\Container;
-use Deployee\Components\Container\ContainerInterface;
-use Deployee\Components\Dependency\ContainerResolver;
-use Deployee\Components\Environment\Environment;
-use Deployee\Components\Environment\EnvironmentInterface;
-use Deployee\Components\Persistence\LazyPDO;
+use Deployee\Components\Plugins\PluginInterface;
 use Deployee\Components\Plugins\PluginLoader;
-use Symfony\Component\Console\Command\Command;
+use Deployee\Kernel\Exceptions\ConfigFileNotFoundException;
+use Symfony\Bridge\ProxyManager\LazyProxy\Instantiator\RuntimeInstantiator;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Finder\Finder;
 
-class Kernel implements KernelInterface
+class Kernel
 {
+    const APP_NAME = 'Deployee';
+
+    const APP_VERSION = '1.1';
+
     /**
-     * @var ContainerInterface
+     * @var ContainerBuilder
      */
     private $container;
 
@@ -34,108 +33,127 @@ class Kernel implements KernelInterface
 
     /**
      * @param string $envName
-     * @throws \Deployee\Components\Container\ContainerException
      */
-    public function __construct(string $envName = KernelConstraints::ENV_PROD)
+    public function __construct(string $envName = 'production')
     {
         $this->envName = $envName;
-        $this->container = new Container();
+        $this->container = new ContainerBuilder();
     }
 
     /**
      * @return Kernel
-     * @throws \Deployee\Components\Container\ContainerException
+     * @throws ConfigFileNotFoundException
+     * @throws \Exception
      */
     public function boot(): self
     {
-        $this->container->set(InputInterface::class, function(){
-            $args = array_filter($_SERVER['argv'], function($val){
-                return strpos($val, '-e=') !== 0
-                    && strpos($val, '--env=') !== 0;
-            });
+        $configFile = $this->getConfigFilepath();
+        $this->container->setParameter('kernel.env', $this->envName);
+        $this->container->setParameter('kernel.configfile', $configFile);
+        $this->container->setParameter('kernel.workdir', dirname($configFile));
+        $this->container->setProxyInstantiator(new RuntimeInstantiator());
 
-            return new ArgvInput($args);
-        });
+        $loader = new YamlFileLoader($this->container, new FileLocator(__DIR__ . '/../../config'));
+        $loader->load('services.yaml');
 
-        $envName = $this->envName;
-        $configFilepath = $this->getConfigFilepath();
-        $this->container->set(EnvironmentInterface::class, function() use($envName, $configFilepath){
-            return new Environment($envName, dirname($configFilepath));
-        });
-
-        $this->container->set(ConfigInterface::class, function() use($configFilepath){
-            return (new ConfigLoader())->load($configFilepath);
-        });
-
-        $this->container->set(ContainerResolver::class, function(ContainerInterface $container){
-            return new ContainerResolver($container);
-        });
-
-        $this->container->set(CommandCollection::class, new CommandCollection());
-        $this->container->set(Application::class, new Application());
-        $this->container->set(EventDispatcher::class, new EventDispatcher());
-
-        $this->container->set(LazyPDO::class, function(ContainerInterface $container){
-            /* @var ConfigInterface $config */
-            $config = $container->get(ConfigInterface::class);
-            return new LazyPDO(
-                sprintf(
-                    '%s:host=%s;port=%d;dbname=%s',
-                    $config->get('db.type', 'mysql'),
-                    $config->get('db.host', 'localhost'),
-                    $config->get('db.port', 3306),
-                    $config->get('db.database')
-                ),
-                $config->get('db.user', get_current_user()),
-                $config->get('db.password', ''),
-                [
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                ]
-            );
-        });
+        $loader = new YamlFileLoader($this->container, new FileLocator(dirname($configFile)));
+        $loader->load(basename($configFile));
 
         $pluginLoader = new PluginLoader($this->container);
-        $this->container->set(KernelConstraints::PLUGIN_COLLECTION, $pluginLoader->loadPlugins());
-
+        $this->container->set('kernel.services.plugins', $pluginLoader->loadPlugins());
 
         return $this;
     }
 
     /**
+     * @param InputInterface $input
      * @return int
      * @throws \Exception
      */
-    public function run(): int
+    public function run(InputInterface $input): int
     {
-        $container = $this->container;
+        $this->container->set(ArgvInput::class, $input);
+
+        /* @var PluginInterface $plugin */
+        foreach($this->container->get('kernel.services.plugins') as $plugin){
+            $this->runPlugin($plugin);
+        }
+
+        $commands = $this->container->findTaggedServiceIds('console.command');
         /* @var Application $app */
-        $app = $this->container->get(Application::class);
-        $commands = $this->container->get(CommandCollection::class)->getCommands();
-
-        array_walk($commands, function(Command $cmd) use($container){
-            /* @var ContainerResolver $resolver */
-            $resolver = $container->get(ContainerResolver::class);
-            $resolver->autowireObject($cmd);
-        });
+        $app = new Application(self::APP_NAME, self::APP_VERSION);
         $app->addCommands($commands);
-
-        /* @var InputInterface $input */
-        $input = $this->container->get(InputInterface::class);
 
         return $app->run($input);
     }
 
     /**
+     * @param PluginInterface $plugin
+     * @throws \Exception
+     */
+    private function runPlugin(PluginInterface $plugin)
+    {
+        try {
+            $method = new \ReflectionMethod(get_class($plugin), 'run');
+        }
+        catch(\ReflectionException $e){
+            return;
+        }
+
+        $args = [];
+        foreach ($method->getParameters() as $parameter) {
+            if($parameter->getType() === null){
+                throw new \InvalidArgumentException(sprintf(
+                    'Parameter %s of %s must have a service type hint',
+                    $parameter->getName(),
+                    $method->getNamespaceName()
+                ));
+            }
+
+            $args[] = $this->container->get($parameter->getType()->getName());
+        }
+
+        $method->invoke($plugin, ...$args);
+    }
+
+    /**
      * @return string
+     * @throws ConfigFileNotFoundException
      */
     private function getConfigFilepath(): string
     {
-        $locator = new ConfigLocator();
-        return $locator->locate([
+        $searchablePaths = [
             dirname(__DIR__) . '/../../../../.deployee',
             dirname(__DIR__) . '/../../../..',
-            dirname(__DIR__) . '/../.deployee',
-            dirname(__DIR__) . '/..',
-        ], $this->envName);
+            dirname(__DIR__) . '/../.deployee'
+        ];
+
+        foreach($searchablePaths as $searchablePath){
+            if(($path = realpath($searchablePath)) === '' || (!is_dir($path) && !is_link($path))){
+                continue;
+            }
+
+            $name = sprintf(
+                '/^(.)?deployee(%s\.dist)?.yaml$/',
+                $this->envName !== '' ? sprintf('\.%s|', $this->envName) : ''
+            );
+
+            $finder = new Finder();
+            $finder
+                ->name($name)
+                ->followLinks()
+                ->files()
+                ->ignoreUnreadableDirs()
+                ->depth(0)
+                ->ignoreDotFiles(false)
+                ->in($path)
+            ;
+
+            foreach($finder as $fileInfo){
+                return $fileInfo->getRealPath();
+            }
+        }
+
+        throw new ConfigFileNotFoundException('Deployee config file could not be found');
     }
 }
