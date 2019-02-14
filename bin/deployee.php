@@ -20,13 +20,26 @@ foreach($findLoader as $expectedFilepath){
 }
 
 if($loaderFile === ''){
-    throw new \Exception("Could not find autoloader file");
+    echo 'Could not find autoloader file' . PHP_EOL;
+    exit(255);
 }
 
 require $loaderFile;
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(['--env', '-e'], getenv('DEPLOYEE_ENV') ?? KernelConstraints::ENV_PROD);
-$kernel = new Kernel($env);
 
-return $kernel->boot()->run();
+
+try {
+    $kernel = new Kernel($env);
+    return $kernel->boot()->run();
+}
+catch (\Exception $e){
+    echo sprintf(
+        "An error occured: %s\n\nThe following trace provied some detailed information\n\n%s",
+        $e->getMessage(),
+        $e->getTraceAsString()
+    );
+
+    exit(255);
+}
