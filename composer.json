@@ -11,23 +11,23 @@
   ],
   "bin": ["bin/deployee"],
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.3",
     "ext-pdo": "*",
-    "deployee/container": "^1.0",
-    "deployee/plugins": "^1.0",
-    "deployee/application": "^1.0",
-    "deployee/config": "^1.0.1",
-    "deployee/dependency": "^1.0",
-    "deployee/environment": "^1.0",
-    "deployee/plugin-deploy": "^1.0",
-    "deployee/plugin-install": "^1.0",
-    "deployee/plugin-shelltasks": "^1.0",
-    "deployee/plugin-filesystemtasks": "^1.0",
-    "deployee/docblock": "^1.0",
-    "deployee/plugin-deployenv": "^1.0",
-    "deployee/persistence": "^1.0",
-    "deployee/plugin-deployhistory": "^1.0",
-    "deployee/plugin-dbtasks": "^1.0"
+    "deployee/container": "^2.0",
+    "deployee/plugins": "^2.0",
+    "deployee/application": "^2.0",
+    "deployee/config": "^2.0",
+    "deployee/dependency": "^2.0",
+    "deployee/environment": "^2.0",
+    "deployee/plugin-deploy": "^2.0",
+    "deployee/plugin-install": "^2.0",
+    "deployee/plugin-shelltasks": "^2.0",
+    "deployee/plugin-filesystemtasks": "^2.0",
+    "deployee/docblock": "^2.0",
+    "deployee/plugin-deployenv": "^2.0",
+    "deployee/persistence": "^2.0",
+    "deployee/plugin-deployhistory": "^2.0",
+    "deployee/plugin-dbtasks": "^2.0"
   },
   "autoload": {
     "psr-4": {
@@ -40,9 +40,9 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.5",
+    "phpunit/phpunit": "^9.0.0",
     "roave/security-advisories": "dev-master",
-    "deployee/plugin-idesupport": "^1.0",
-    "deployee/plugin-generatedeploy": "^1.0"
+    "deployee/plugin-idesupport": "^2.0",
+    "deployee/plugin-generatedeploy": "^2.0"
   }
 }
